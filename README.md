@@ -10,39 +10,41 @@
 
 | ディレクトリ | 役割 | 内容 |
 |---|---|---|
-| `ai/` | **AI エージェント向けルーター** | `ONBOARDING.md`（最初に読むファイル。必要なStandardだけへ案内） |
-| `standards/governance/` | **人・AIはどう行動するか** | AI利用方針、Git運用、逸脱ルール、Standard追加の考え方 |
-| `standards/architecture/` | **システムをどう作るか** | Django/PostgreSQL/React Islands等のCore Architectureと、必要時だけ読むOptional Standard |
-| `standards/application-ui/` | **画面構造・操作の一貫性** | UI/UXのCore原則、標準Layouts、エラー・フォームの扱い |
-| `decisions/` | **ADR** | なぜ現在のStandardやArchitectureになったのかを説明する重要な決定の背景 |
+| `ai/` | **AI エージェント向けルーター** | `ONBOARDING.md` (AIが最初に読むファイル。必守事項と各Standardへのリンク) |
+| `standards/governance/` | **人・AIはどう行動するか** | AI利用方針、Git運用、コミットルール、Standard逸脱時のルール |
+| `standards/architecture/` | **システムをどう作るか** | Django/PostgreSQL/React Islands等の技術選定、ファイル構成、権限管理 |
+| `standards/application-ui/` | **画面構造・操作の一貫性** | UIの基本原則、Layouts定義（画面レイアウトのパターン）、コンポーネント利用方針 |
+| `decisions/` | **ADR (アーキテクチャ決定記録)** | なぜ現在のStandardやArchitectureになったのかを説明する重要な過去の技術決定の背景 |
 
 ## Core と Optional
 
-Standardは、すべてを同じ強さで積み上げません。
+各Standard領域の `README.md` は、対象プロジェクトの大半に適用する **Core Standard** です。
+特定機能だけに必要な詳細仕様は、各領域の `optional/` 配下へ分離します。
 
-- **Core Standard**: 対象プロジェクトの大半に適用する、少数で変わりにくい原則。
-- **Optional Standard**: 特定機能を採用した場合だけ適用する詳細仕様。必要な場合はJSON契約やHTTP仕様なども具体的に定義する。
+- Coreは少数で変わりにくい判断だけを持つ
+- Optionalは該当機能を扱う場合のみ参照する
+- Optionalは必要であればURL、レスポンス形式、運用契約等まで具体的に規定できる
+- 特定ライブラリの候補、実装コード、プロジェクト固有の判断をStandardへ混ぜない
 
-AIはCoreを基本として参照し、Optionalは該当機能を扱う場合だけ読みます。
-Standardの追加・配置判断は [ADR-0004](decisions/adr-0004-core-and-optional-standards.md) に従います。
+この分離の理由と追加基準は [ADR-0003](decisions/adr-0003-core-and-optional-standards.md) を参照してください。
 
 ## 基本原則
 
-1. **AIファースト・ルーター**: すべてのドキュメントを最初からAIに読ませず、`ai/ONBOARDING.md` を起点として必要なStandardだけを読む。
-2. **Standardは強いデフォルト**: Standardからの逸脱は禁止しないが、重要な逸脱はプロジェクト側で理由を記録する。軽微な例外までADRを要求しない。
-3. **実装との分離**: UIコンポーネントやプロジェクト雛形の実コードは本リポジトリに置かない。実装はShared UIや各プロジェクト等から参照する。
-4. **繰り返しが確認されてから共通化する**: 「将来使うかもしれない」という理由だけでStandard・Shared実装・Project Templateを増やさない。
-5. **レイアウトはテンプレート標準として扱う**: 新規アプリ・画面はApplication UI StandardのStandard / Simple / Focusいずれかを原則ベースとし、ゼロからナビゲーション構造を設計しない。固有要件はまず既存レイアウトの拡張で解決する。
+1. **AIファースト・ルーター**: すべてのドキュメントを最初からAIに読ませるのではなく、`ai/ONBOARDING.md` を起点として、タスクに必要なStandardだけを読ませるようにします。
+2. **Standardからの逸脱は許容する**: Standardは強いデフォルトですが、絶対的な制約ではありません。あえて異なる技術選定をするなど、重要な逸脱を行った場合は、プロジェクト側のADRとして「なぜ外れたのか」を記録します。
+3. **実装との分離**: 本リポジトリにはUIコンポーネント（UserPicker等）やプロジェクト雛形の「実コード」は置きません。UI実装は別のShared UI等から参照し、その他の共通実装も実際の重複が確認されてから必要に応じて分離します。
+4. **繰り返しがないものを先回りして標準化しない**: 「将来必要になるかもしれない」だけでStandard、Template、Shared実装を増やしません。
 
-## Standardにしないもの
+## Standardへ追加する前に
 
-以下は自動的にStandardへ追加しません。
+新しいルールを追加するときは、次を確認します。
 
-- 特定ライブラリのバージョンや比較調査 → Recommendation / 実装側ドキュメント
-- 再利用する実装コード → Shared UI等
-- 1プロジェクト固有の判断 → Project側
-- 判断理由だけを残すもの → ADR
-- まだ繰り返しが確認されていない雛形 → 実プロジェクトで確認後にTemplate化を検討
+1. 複数プロジェクトで同じ判断を繰り返しているか。
+2. AIへ同じ説明を繰り返しているか。
+3. 統一しないことで実際の保守・運用・UX上の問題が起きるか。
+
+対象プロジェクトの大半に適用するならCore候補、特定機能を採用したときだけ必要ならOptional候補です。
+具体的なライブラリ選定はRecommendation、再利用コードはShared implementation、1プロジェクト固有の判断はProject側へ置きます。
 
 ## メンテナンスツール
 
