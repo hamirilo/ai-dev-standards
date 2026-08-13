@@ -67,11 +67,6 @@ AIは、ユーザーからcommit / pushの権限が与えられていない状�
 ## 5. 技術・資産の追加判断
 
 新しい技術や共通資産を追加するときは、まず既存のStandard / Recommendation / Shared implementationで解決できないか確認します。
+配置先（Core / Optional / Recommendation / Shared implementation / Project側）の判断基準は [ADR-0003](../../decisions/adr-0003-core-and-optional-standards.md) を正として従います。各レイヤーの整備状況は [README「関連レイヤーの所在」](../../README.md#関連レイヤーの所在) を参照してください。
 
-- **判断を繰り返す** → Standard候補
-- **特定機能でだけ必要な共通契約を繰り返す** → Optional Standard候補
-- **具体的なライブラリのデフォルトを決めたい** → Recommendation
-- **実装を繰り返す** → Shared implementation / Shared UI候補
-- **1プロジェクト固有** → そのProject側
-
-同じ用途のサードパーティライブラリを各プロジェクトで無秩序に増やしません。UI系の具体的な推奨技術はShared UI側で管理します。
+同じ用途のサードパーティライブラリを各プロジェクトで無秩序に増やしません。UI系の具体的な推奨技術はShared UI側（今後実装予定）で管理します。

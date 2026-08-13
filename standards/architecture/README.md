@@ -9,14 +9,25 @@
 
 - **Backend**: Django
 - **Database**: PostgreSQL
-- **Internal Authentication**: OIDC + Django Session
-- **Personal Authentication**: 固定しない
+- **社内向け認証**（社内システムの従業員ログイン）: OIDC + Django Session
+- **社外・一般ユーザー向け認証**: 固定しない（プロジェクト要件に応じて設計）
 - **API**: 必要な場合のみ Django Ninja
 - **Frontend Base**: Django Templates (SSR)
 - **Interactive UI**: React Islands
 - **Full SPA**: 明確な必要性がある場合のみ検討
 
 社内システムではOIDCを認証の標準とし、ログイン後はDjango Session Cookieを利用します。JWT等をReact側で独自保持する構成を標準にはしません。
+
+### 時刻・タイムゾーン
+
+- `USE_TZ = True` とし、DBにはUTCで保存する。
+- 表示タイムゾーンは `Asia/Tokyo` を基本とする。
+
+### 依存関係・ツールチェーン
+
+- Pythonの環境・依存管理は **uv** で統一する。
+- 依存はロックファイル（`uv.lock`、`package-lock.json` 等）で固定し、Gitへコミットする。
+- JS側のパッケージマネージャ・ビルドツールはプロジェクト間で統一し、無秩序に変えない。具体的なツール選定はRecommendation（未整備。整備までは既存プロジェクトの実績に合わせる）で管理する。
 
 ---
 

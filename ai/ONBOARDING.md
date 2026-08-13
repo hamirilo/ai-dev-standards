@@ -2,6 +2,7 @@
 
 > 本リポジトリは、開発における「判断のブレ」を減らすための Development Standards です。
 > AI エージェント（Claude / Codex / Gemini 等）がプロジェクトに参加するとき、**最初にこのファイルのみを読みます**。
+> 各プロジェクトへは、そのプロジェクトの `CLAUDE.md` 等に本ファイルへのパスを記載して参照させます（submodule等では配布しません）。
 
 ---
 
@@ -41,14 +42,7 @@ Django構成、Reactの責務、OIDC、認可、Security、Logging、Testing、A
 
 ## Standardを増やそうとしたとき
 
-まず [ADR-0003: StandardsをCoreとOptionalに分離する](../decisions/adr-0003-core-and-optional-standards.md) を確認してください。
-
-- 大半のプロジェクトに適用する変わりにくい判断 → **Core候補**
-- 特定機能を使う場合だけ必要な共通仕様 → **Optional候補**
-- 特定ライブラリのデフォルト候補 → **Recommendation**
-- 再利用する実装コード → **Shared implementation / Shared UI**
-- 1プロジェクトだけの判断 → **Project側**
-
+追加基準と配置先（Core / Optional / Recommendation / Shared implementation / Project側）の判断は、[ADR-0003: StandardsをCoreとOptionalに分離する](../decisions/adr-0003-core-and-optional-standards.md) を正として従ってください。
 繰り返しが確認されていないものを先回りしてStandard化しません。
 
 ---
@@ -56,5 +50,7 @@ Django構成、Reactの責務、OIDC、認可、Security、Logging、Testing、A
 ## 実装資産について
 
 本リポジトリは「判断の再利用」を扱い、実装コードは含みません。
-UIコンポーネントやUI系Recommendationは別のShared UIリポジトリ等から利用します。
-Project TemplateやDjango側の共通実装も、実際の複数プロジェクトで繰り返しが確認されてから分離を検討します。
+
+- **Shared UI（UIコンポーネント・UI系Recommendation）は今後実装予定であり、まだ存在しません。** 存在しない資産を探索せず、整備されるまでは各プロジェクト内で実装します。
+- Project TemplateやDjango側の共通実装も、実際の複数プロジェクトで繰り返しが確認されてから分離を検討します。
+- 各レイヤーの整備状況は [README「関連レイヤーの所在」](../README.md#関連レイヤーの所在) を参照してください。
