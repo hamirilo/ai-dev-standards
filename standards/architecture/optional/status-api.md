@@ -75,7 +75,7 @@ GET /api/status/
 | `version` | No | デプロイ中のアプリケーションバージョンやcommit等 |
 | `checks` | No | 依存サービス等の個別チェック結果 |
 
-`checks` の各要素は最低限 `status` を持ちます。
+`checks` の各要素は最低限 `status` を持ちます。`status` の値はサービス全体と同じ `ok` / `degraded` / `error` の3値です。個別checkの結果からサービス全体の `status` をどう導出するか（例: 非必須依存の `error` を全体では `degraded` とする等）はプロジェクトで判断します。
 
 ```json
 {
@@ -105,6 +105,7 @@ GET /api/status/
 - `503 Service Unavailable`: `status` が `error`
 
 監視システムはJSON本文だけでなくHTTP statusでも障害判定できるようにします。
+レスポンスには `Cache-Control: no-store` を設定し、経路上のキャッシュによる古い状態の返却を防ぎます。
 
 ## Checkの考え方
 
