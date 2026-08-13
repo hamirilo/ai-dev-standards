@@ -39,13 +39,12 @@
 
 バージョンは固定せず、常に最新のmainを参照します。
 
-## 関連レイヤーの所在
+## Standard以外の配置先
 
-Standardが参照する「Standard以外の配置先」の現状です。
+Standardへ置かない判断や実装資産の主な配置先です。
 
 | レイヤー | 内容 | 現状 |
 |---|---|---|
-| **Application UI** | 基本UIは各プロジェクトで shadcn/ui を導入し、Semantic Token に基づいて利用する | 各プロジェクトで管理 |
 | **Domain Components** | EmployeePicker等、業務ドメイン固有の再利用UI | 所有するドメイン／プロジェクトで管理 |
 | **Recommendation** | 特定ライブラリのデフォルト候補・比較 | 未整備 |
 | **Shared implementation** | 複数プロジェクトで再利用するコード | 実際の重複が確認された場合のみ分離を検討 |
