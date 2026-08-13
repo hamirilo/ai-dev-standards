@@ -1,110 +1,110 @@
 # Application UI Standard
 
 本ドキュメントは、複数アプリで操作感を揃えるための **Core Application UI Standard** です。
-見た目の細部ではなく、「どのUIをどの場面で使うか」という判断を揃えます。実際のコンポーネントコードは別のShared UI等で管理します。
+見た目の細部ではなく、全体で繰り返し使うUI判断だけを定義します。
 
 ---
 
 ## 1. UIの基本原則
 
-- **Primary Action**: 画面の主操作は、原則としてPage Header付近の分かりやすい位置（通常は右側）に置く。画面特性上より適切な配置がある場合は例外を許容する。
-- **通知**: `alert()` を通常の通知に使わない。保存成功など、操作後の補助的なフィードバックにはToastを使う。
+- **基本UI**: Reactの基本UIコンポーネントには、原則として `shadcn/ui` を使用する。既存コンポーネントで要件を満たせる場合は独自Primitiveを再実装しない。
+- **Primary Action**: 画面の主操作は、原則としてPage Header付近の分かりやすい位置（通常は右側）に置く。
+- **通知**: `alert()` を通常の通知に使わず、保存成功などの補助的なフィードバックにはToastを使う。
 - **破壊的操作**: `confirm()` に依存せず、重要な削除等はConfirm Dialog等で意図を確認する。
-- **Empty State**: データがない場合は空の表だけを出さず、状態を明示する。ユーザーが次に取れる有効な操作がある場合のみ、そのアクションも提示する。
-- **基本操作性**: 主要な操作がキーボードで完結でき、フォーカス位置が視認できる状態を損なわない。アクセシビリティの詳細仕様はCore Standardでは固定せず、Shared UI側（今後実装予定）で扱う。
-- **再利用**: 共通UIやDomain Componentが存在する場合は、同じ用途のUIを各プロジェクトで再実装しない。
+- **Empty State**: データがない場合は状態を明示し、有効な次の操作がある場合のみ提示する。
+- **基本操作性**: キーボード操作やフォーカス表示など、利用しているUI Componentのアクセシビリティ上の振る舞いを不用意に壊さない。
+- **先行抽象化を避ける**: 共通UIライブラリや独自Design Systemを前提にせず、実際の繰り返しが確認されるまで不要なラッパーや共通化を増やさない。
 
 ---
 
-## 2. エラーとフィードバックの粒度
+## 2. Semantic Tokens
 
-エラーの種類に応じて、表示場所と強さを揃えます。
+意味を持つ色・状態表現は、具体的な色ではなくSemantic Tokenで指定する。
 
-| 種類 | 基本表現 | 例 |
-|---|---|---|
-| 入力項目のエラー | Field Error | 必須、形式、文字数 |
-| フォーム全体・業務ルールのエラー | Form Error / Alert | 状態上この操作を実行できない |
-| 操作・非同期処理の一時的失敗 | Toast | 保存失敗、アップロード失敗、通信失敗 |
-| ページ・機能自体を利用できない | Error State / Error Page | 対象消失、重大な読込失敗 |
+- `primary`, `secondary`, `muted`, `accent`, `destructive`, `background`, `foreground`, `border`, `input`, `ring` など、`shadcn/ui` のToken体系を基本とする。
+- Tokenは「何色か」ではなく「何のための表現か」で選ぶ。
+- `blue-600` や `red-500` のような固定色を、主要操作・状態表現の意味として直接使わない。
+- Themeの具体的な色値は各アプリ側で管理し、Standardでは固定しない。
+- 既存Tokenで表現できる場合は、新しいTokenを増やさない。
 
-ユーザーが修正しなければならない入力エラーをToastだけで伝えません。
-内部例外の詳細やstack traceをそのままユーザーへ表示しません。
+Themeを定義・変更する場合の詳細は [Theme Customization](optional/theme-customization.md) を参照する。
 
 ---
 
-## 3. フォーム / バリデーションUX
+## 3. エラーとフィードバック
 
-- 必須、形式、文字数など、早く検出できる入力不備は可能な範囲でクライアント側でも知らせる。
+| 種類 | 基本表現 |
+|---|---|
+| 入力項目のエラー | Field Error |
+| フォーム全体・業務ルールのエラー | Form Error / Alert |
+| 操作・非同期処理の一時的失敗 | Toast |
+| ページ・機能自体を利用できない | Error State / Error Page |
+
+入力エラーをToastだけで伝えず、内部例外やstack traceをそのままユーザーへ表示しない。
+
+---
+
+## 4. フォーム / バリデーションUX
+
+- 早く検出できる入力不備は、可能な範囲でクライアント側でも知らせる。
 - 正当性の最終判断は必ずサーバー側で行う。
 - Field Errorは対象フィールドの近くに表示する。
-- フォーム全体の業務エラーはフォーム上部等の分かりやすい場所に表示する。
+- フォーム全体の業務エラーは分かりやすい位置に表示する。
 - 送信失敗時に入力内容を不用意に失わない。
 - 保存中は必要に応じて二重送信を防止する。
-- 保存成功などはToast等で補助的にフィードバックする。
-- 必須記号の色や具体的な余白など、見た目の細部はCore Standardで固定しない。
+
+見た目の細部はCore Standardで固定しない。
 
 ---
 
-## 4. 共通 Domain Components
+## 5. Domain Components
 
-複数アプリで繰り返すドメインUIや複雑なUIは、Shared UI等で提供されている共通実装を優先します。
-（Shared UIは今後実装予定です。整備されるまでは各プロジェクト内で実装し、複数プロジェクトでの繰り返しが確認されたものから共通化します。）
+社員・組織・拠点など、特定の業務ドメインに意味を持つUIは、そのドメインを所有するプロジェクトで管理する。
 
-代表例:
+例:
 
 - 社員選択: `UserPicker` / `EmployeeSearch`
 - 組織・部署選択: `DepartmentPicker` / `OrganizationTree`
-- 日時選択: `DatePicker` / `DateRangePicker`
-- データ一覧: `DataTable`
 
-具体的なライブラリ選定や実装方式は、このStandardsリポジトリではなくShared UI側のRecommendation / 実装ドキュメントで管理します。
+`DatePicker`, `DataTable`, `Dialog`, `Toast` などの汎用UIはDomain Componentとして扱わない。まず `shadcn/ui` や既存ライブラリ、プロジェクト内の既存実装を利用する。
 
 ---
 
-## 5. Layouts — Template Standard
+## 6. Layouts — Template Standard
 
-新規画面・アプリは、原則として以下の **Standard App / Simple App / Focus App** のいずれかをベースにします。
-これらは単なる参考例ではなく、ナビゲーションや操作位置の一貫性を保つためのテンプレート標準です。
+新規画面・アプリは、原則として **Standard App / Simple App / Focus App** のいずれかを起点にする。これらは参考例ではなく、ナビゲーションや主要操作位置を揃えるためのテンプレート標準とする。
 
-アプリ固有要件がある場合も、最初から独自レイアウトを設計せず、まず既存レイアウトの拡張で対応します。
-
-### 5.1. Standard App
+### Standard App
 
 一般的な業務システム、管理画面、マスタ管理向け。
 
-**主要骨格**:
-
-- Global Headerを画面上部に配置する。
+- Global Headerを上部に配置する。
 - Header左側にアプリ / ブランド、右側にUser Menuを配置する。
 - アプリ内の主要ナビゲーションは左Sidebarに配置する。
 - Main Content上部にPage Headerを配置する。
 - Primary Actionは原則としてPage Header領域に配置する。
 
-### 5.2. Simple App
+### Simple App
 
 単機能ツール、小規模ユーティリティ、簡易申請向け。
-
-**主要骨格**:
 
 - Sidebarを持たない。
 - Headerを上部に配置し、左側にアプリ名、右側にUser Menuを配置する。
 - Main Contentを中心に構成する。
-- 画面タイトルやPrimary Actionが必要な場合は、Main Content上部で一貫したPage Headerパターンを利用する。
+- 必要な場合はMain Content上部に一貫したPage Headerを置く。
 
-### 5.3. Focus / Tool App
+### Focus / Tool App
 
 座席表、エディタ、キャンバス型ツール等、広い作業領域が重要なアプリ向け。
 
-**主要骨格**:
-
 - Minimal Headerを上部に配置する。
 - 残りをMain Workspaceとして広く利用する。
-- アプリ内の主要操作はHeaderまたは一貫したToolbarに集約する。
+- 主要操作はHeaderまたは一貫したToolbarに集約する。
 - ユーザー関連操作の位置をアプリごとに無秩序に変更しない。
 
-### 5.4. 固定するもの / 自由にするもの
+### 固定するもの / 拡張してよいもの
 
-利用者が複数アプリ間で学び直さなくて済むよう、次の要素は強く統一します。
+強く揃えるもの:
 
 - Headerの基本位置
 - User Menuの位置
@@ -112,28 +112,20 @@
 - Page Headerの役割
 - Primary Actionの基本的な配置領域
 
-一方、次のようなコンテンツ内部の構成はアプリ要件に応じて変更できます。
+アプリ要件に応じて変更できるもの:
 
-- Contentの最大幅
-- Grid / Card構成
-- Dashboard Widgetの配置
-- Filter Bar
-- Tabs
+- Content幅、Grid / Card構成
+- Filter Bar、Tabs、Toolbar
 - 補助Panel / Inspector
-- Toolbarの具体的な操作項目
-- 情報密度やコンテンツ固有の配置
+- Dashboard Widgetや情報密度
 
-例えばStandard Appに右側Inspectorを追加する構成は、新しいレイアウト種別ではなく **Standard Appの派生拡張** として扱います。
+既存3レイアウトで足りない場合も、まず最も近いレイアウトを拡張する。それでも適合しない明確なUX上の理由がある場合だけプロジェクト固有Layoutを作り、同じ派生が複数プロジェクトで繰り返された場合にStandardへの昇格を検討する。
 
-### 5.5. 既存レイアウトで足りない場合
+---
 
-既存3レイアウトで要件を満たせない場合は、次の順で判断します。
+## Optional Standards
 
-1. 既存レイアウトのどれが最も近いか確認する。
-2. Sidebar、Inspector、Tabs、Toolbar等の拡張で対応できないか確認する。
-3. それでも適合しない明確なUX上の理由がある場合のみ、プロジェクト固有Layoutを作成する。
-4. 同じ派生Layoutが複数プロジェクトで繰り返された場合に限り、Application UI Standardへの昇格を検討する。
+該当する作業を行う場合のみ参照する。
 
-標準レイアウトの主要骨格を変更する場合は、「なぜ既存レイアウトの拡張では不足するのか」を説明できることを求めます。重要な逸脱であればプロジェクト側に理由を残します。
-
-レイアウトの具体的なDjango Template / React実装はShared UI等で管理します。
+- [Theme Customization](optional/theme-customization.md) — Themeの具体値やToken追加を扱う場合
+- [AI Screen Design](optional/ai-screen-design.md) — Claude Design等へ画面デザインを依頼する場合

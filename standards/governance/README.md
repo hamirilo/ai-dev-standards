@@ -32,7 +32,7 @@
 - `ai/ONBOARDING.md` をルーターとして、必要なCore Standardだけを読む。
 - Optional Standardは該当機能を扱う場合のみ読む。
 - Standardで既に判断済みの内容を、毎回ゼロから比較・調査しない。
-- Shared implementation / Shared UIに既存実装がある場合は再実装しない。
+- 既存実装がある場合は、同じ用途を再実装しない。
 
 ---
 
@@ -66,7 +66,12 @@ AIは、ユーザーからcommit / pushの権限が与えられていない状�
 
 ## 5. 技術・資産の追加判断
 
-新しい技術や共通資産を追加するときは、まず既存のStandard / Recommendation / Shared implementationで解決できないか確認します。
-配置先（Core / Optional / Recommendation / Shared implementation / Project側）の判断基準は [ADR-0003](../../decisions/adr-0003-core-and-optional-standards.md) を正として従います。各レイヤーの整備状況は [README「関連レイヤーの所在」](../../README.md#関連レイヤーの所在) を参照してください。
+新しい技術や共通資産を追加するときは、まず既存のStandard / Recommendation / 実装で解決できないか確認します。
+配置先の判断基準は [ADR-0003](../../decisions/adr-0003-core-and-optional-standards.md) を正とします。
 
-同じ用途のサードパーティライブラリを各プロジェクトで無秩序に増やしません。UI系の具体的な推奨技術はShared UI側（今後実装予定）で管理します。
+- 基本UIの判断はApplication UI Standardで扱い、各プロジェクトで `shadcn/ui` を利用する。
+- Domain Componentは、その業務ドメインを所有する側で管理する。
+- 具体的なサードパーティライブラリ候補はRecommendationとして扱う。
+- 共通実装は、実際の重複が確認された場合にのみ分離を検討する。
+
+同じ用途のライブラリを各プロジェクトで無秩序に増やしません。
