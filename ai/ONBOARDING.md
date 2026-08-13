@@ -32,13 +32,11 @@ Django構成、Reactの責務、OIDC、認可、Security、Logging、Testing、A
 例: 共通ダッシュボード向けのStatus APIを実装・利用する場合は `standards/architecture/optional/status-api.md` を読む。
 
 ### 3. フロントエンド・画面構造・操作の一貫性
-レイアウト、通知、エラー表示、フォームUX、`shadcn/ui` の利用方針、Semantic Tokenによるスタイリングについて:
+レイアウト、通知、エラー表示、フォームUX、`shadcn/ui`、Semantic Tokenについて:
 
 👉 [Application UI Standard](../standards/application-ui/)
 
-Reactの基本UIは原則として `shadcn/ui` を使用し、意味を持つ色・状態表現は固定色ではなくSemantic Tokenで表現する。具体的な配色は各プロジェクトのThemeに委ねる。
-
-新規画面・アプリは、Application UI Standardで定義された **Standard / Simple / Focus** のいずれかのレイアウトを原則として起点にする。独自レイアウトをゼロから作る前に、既存レイアウトの拡張で対応できないか確認すること。
+詳細なTheme設定やAIによる画面デザインなど、該当するOptional Standardがある場合のみApplication UI Standardから参照すること。
 
 ---
 
@@ -52,8 +50,4 @@ Reactの基本UIは原則として `shadcn/ui` を使用し、意味を持つ色
 ## 実装資産について
 
 本リポジトリは「判断の再利用」を扱い、実装コードは含みません。
-
-- 基本UIは各プロジェクトで導入する `shadcn/ui` を利用し、本リポジトリ専用の共通UIパッケージを前提にしません。
-- 社員検索や組織選択などのDomain Componentは、そのドメインを所有するプロジェクトで管理します。
-- Project TemplateやDjango側の共通実装も、実際の複数プロジェクトで繰り返しが確認されてから分離を検討します。
-- 各レイヤーの整備状況は [README「関連レイヤーの所在」](../README.md#関連レイヤーの所在) を参照してください。
+実装資産の配置先や整備状況は [README「Standard以外の配置先」](../README.md#standard以外の配置先) を参照してください。
