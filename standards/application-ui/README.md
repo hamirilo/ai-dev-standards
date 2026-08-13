@@ -1,22 +1,128 @@
 # Application UI Standard
 
 本ドキュメントは、複数アプリで操作感を揃えるための **Core Application UI Standard** です。
-見た目の細部ではなく、「どのUIをどの場面で使うか」という判断を揃えます。実際のコンポーネントコードは別のShared UI等で管理します。
+見た目の細部や共通デザインそのものではなく、「どのUIをどの場面で使うか」「UIの意味をどのようにコードで表現するか」という判断を揃えます。
 
 ---
 
 ## 1. UIの基本原則
 
+- **基本UI**: Reactの基本UIコンポーネントには、原則として `shadcn/ui` を使用する。既存コンポーネントで要件を満たせる場合は独自Primitiveを再実装しない。
 - **Primary Action**: 画面の主操作は、原則としてPage Header付近の分かりやすい位置（通常は右側）に置く。画面特性上より適切な配置がある場合は例外を許容する。
 - **通知**: `alert()` を通常の通知に使わない。保存成功など、操作後の補助的なフィードバックにはToastを使う。
 - **破壊的操作**: `confirm()` に依存せず、重要な削除等はConfirm Dialog等で意図を確認する。
 - **Empty State**: データがない場合は空の表だけを出さず、状態を明示する。ユーザーが次に取れる有効な操作がある場合のみ、そのアクションも提示する。
-- **基本操作性**: 主要な操作がキーボードで完結でき、フォーカス位置が視認できる状態を損なわない。アクセシビリティの詳細仕様はCore Standardでは固定せず、Shared UI側（今後実装予定）で扱う。
-- **再利用**: 共通UIやDomain Componentが存在する場合は、同じ用途のUIを各プロジェクトで再実装しない。
+- **基本操作性**: 主要な操作がキーボードで完結でき、フォーカス位置が視認できる状態を損なわない。`shadcn/ui` 等が持つアクセシビリティ上の振る舞いを不用意な独自実装で壊さない。
+- **再利用**: プロジェクト内またはドメイン側に既存の共有コンポーネントがある場合は、同じ用途のUIを再実装しない。
+- **先行抽象化を避ける**: 共通UIライブラリや独自Design Systemを前提にしない。複数箇所で実際に繰り返されるまで、不要なラッパーや共通化を増やさない。
 
 ---
 
-## 2. エラーとフィードバックの粒度
+## 2. Semantic Tokens — 見た目ではなく意味を指定する
+
+UIの色や状態表現は、具体的な色ではなく **意味（semantic role）** を基準に指定する。
+
+本Standardでは共通の配色やブランドデザインを規定しない。各アプリは独自のThemeを持ってよいが、UI実装を具体的な色値から分離する。
+
+### 2.1. 基本原則
+
+- `primary`, `secondary`, `muted`, `accent`, `destructive`, `background`, `foreground`, `border`, `input`, `ring` など、`shadcn/ui` のSemantic Token体系を基本とする。
+- Tokenは「何色か」ではなく「何のための表現か」で選択する。
+- Tokenの具体的な値は各アプリ側のThemeで定義する。
+- Standard側では `primary` を青にするなど、具体的な配色を固定しない。
+- `shadcn/ui` ComponentがSemantic Tokenを適切に使用している場合は、画面側から固定色で上書きせず、その意味付けを維持する。
+- Componentのvariantで意味を表現できる場合は、`className` による色指定よりvariantを優先する。
+
+例えば、削除操作は「赤いボタン」として実装するのではなく、破壊的操作という意味を指定する。
+
+```tsx
+<Button variant="destructive">削除</Button>
+```
+
+主要操作についても、具体的な青色を指定するのではなく、Buttonのdefault variantが持つ意味を利用する。
+
+```tsx
+<Button>保存</Button>
+```
+
+### 2.2. Themeとの責務分離
+
+Semantic TokenとThemeは別の責務として扱う。
+
+```text
+UI実装
+  ↓
+primary / destructive / muted
+「何を意味するか」
+  ↓
+Theme
+  ↓
+oklch(...) 等
+「実際に何色で表示するか」
+```
+
+各アプリでは、例えば以下のように具体値を定義してよい。
+
+```css
+:root {
+  --primary: oklch(...);
+  --primary-foreground: oklch(...);
+  --destructive: oklch(...);
+  --destructive-foreground: oklch(...);
+}
+```
+
+異なるアプリで `primary` の実際の色が異なることは問題ではない。重要なのは、UIコードが `blue-600` や `red-500` といった具体色ではなく、`primary` や `destructive` という意味に依存していることである。
+
+### 2.3. 固定色の直接指定
+
+意味を持つUI状態・役割について、固定Tailwind Colorの直接指定は原則避ける。
+
+避ける例:
+
+```tsx
+<Button className="bg-blue-600 text-white hover:bg-blue-700">保存</Button>
+<div className="bg-red-500 text-white">削除できません</div>
+```
+
+Semantic Tokenを使用する例:
+
+```tsx
+<Button>保存</Button>
+<div className="bg-destructive text-destructive-foreground">削除できません</div>
+```
+
+ただし、この原則はTailwind CSSによる直接スタイリング全般を禁止するものではない。以下のような画面固有の構造・レイアウトは通常どおり直接指定してよい。
+
+- margin / padding / gap
+- width / height / max-width
+- flex / grid
+- position
+- responsive layout
+- 画面固有の配置
+
+```tsx
+<div className="mt-6 flex max-w-4xl gap-4 px-6">
+```
+
+### 2.4. Tokenを増やす場合
+
+`shadcn/ui` の既存Semantic Tokenで表現できる場合は、新しいTokenを追加しない。
+
+新しいTokenは「この色を再利用したい」ではなく、「既存Tokenでは表現できない独立した意味が継続的に必要になった」場合のみ追加を検討する。
+
+色や場所をそのまま名前にしたTokenは避ける。
+
+```text
+避ける: company-blue / light-blue / header-gray
+検討可能: success / warning
+```
+
+`success` や `warning` についても、将来必要になるという理由だけで事前に標準化しない。
+
+---
+
+## 3. エラーとフィードバックの粒度
 
 エラーの種類に応じて、表示場所と強さを揃えます。
 
@@ -32,7 +138,7 @@
 
 ---
 
-## 3. フォーム / バリデーションUX
+## 4. フォーム / バリデーションUX
 
 - 必須、形式、文字数など、早く検出できる入力不備は可能な範囲でクライアント側でも知らせる。
 - 正当性の最終判断は必ずサーバー側で行う。
@@ -45,30 +151,29 @@
 
 ---
 
-## 4. 共通 Domain Components
+## 5. Domain Components
 
-複数アプリで繰り返すドメインUIや複雑なUIは、Shared UI等で提供されている共通実装を優先します。
-（Shared UIは今後実装予定です。整備されるまでは各プロジェクト内で実装し、複数プロジェクトでの繰り返しが確認されたものから共通化します。）
+社員・組織・拠点など、特定の業務ドメインに意味を持つUIは、そのドメインを所有するプロジェクトで管理する。
 
 代表例:
 
 - 社員選択: `UserPicker` / `EmployeeSearch`
 - 組織・部署選択: `DepartmentPicker` / `OrganizationTree`
-- 日時選択: `DatePicker` / `DateRangePicker`
-- データ一覧: `DataTable`
 
-具体的なライブラリ選定や実装方式は、このStandardsリポジトリではなくShared UI側のRecommendation / 実装ドキュメントで管理します。
+これらは単なるUI Primitiveではなく、検索条件、識別子、表示形式、権限、API契約などのドメイン知識を含み得るため、汎用UI Standard側で実装を所有しない。
+
+一方、`DatePicker`, `DataTable`, `Dialog`, `Toast` などの汎用UIはDomain Componentとして扱わない。まず `shadcn/ui` や既存ライブラリ、プロジェクト内の既存実装を利用し、独自の共通UIパッケージを先行して作らない。
 
 ---
 
-## 5. Layouts — Template Standard
+## 6. Layouts — Template Standard
 
 新規画面・アプリは、原則として以下の **Standard App / Simple App / Focus App** のいずれかをベースにします。
 これらは単なる参考例ではなく、ナビゲーションや操作位置の一貫性を保つためのテンプレート標準です。
 
 アプリ固有要件がある場合も、最初から独自レイアウトを設計せず、まず既存レイアウトの拡張で対応します。
 
-### 5.1. Standard App
+### 6.1. Standard App
 
 一般的な業務システム、管理画面、マスタ管理向け。
 
@@ -80,7 +185,7 @@
 - Main Content上部にPage Headerを配置する。
 - Primary Actionは原則としてPage Header領域に配置する。
 
-### 5.2. Simple App
+### 6.2. Simple App
 
 単機能ツール、小規模ユーティリティ、簡易申請向け。
 
@@ -91,7 +196,7 @@
 - Main Contentを中心に構成する。
 - 画面タイトルやPrimary Actionが必要な場合は、Main Content上部で一貫したPage Headerパターンを利用する。
 
-### 5.3. Focus / Tool App
+### 6.3. Focus / Tool App
 
 座席表、エディタ、キャンバス型ツール等、広い作業領域が重要なアプリ向け。
 
@@ -102,7 +207,7 @@
 - アプリ内の主要操作はHeaderまたは一貫したToolbarに集約する。
 - ユーザー関連操作の位置をアプリごとに無秩序に変更しない。
 
-### 5.4. 固定するもの / 自由にするもの
+### 6.4. 固定するもの / 自由にするもの
 
 利用者が複数アプリ間で学び直さなくて済むよう、次の要素は強く統一します。
 
@@ -125,7 +230,7 @@
 
 例えばStandard Appに右側Inspectorを追加する構成は、新しいレイアウト種別ではなく **Standard Appの派生拡張** として扱います。
 
-### 5.5. 既存レイアウトで足りない場合
+### 6.5. 既存レイアウトで足りない場合
 
 既存3レイアウトで要件を満たせない場合は、次の順で判断します。
 
@@ -136,4 +241,4 @@
 
 標準レイアウトの主要骨格を変更する場合は、「なぜ既存レイアウトの拡張では不足するのか」を説明できることを求めます。重要な逸脱であればプロジェクト側に理由を残します。
 
-レイアウトの具体的なDjango Template / React実装はShared UI等で管理します。
+レイアウトの実装は各プロジェクト側で行い、実際に複数プロジェクトで同じ実装が繰り返されるまでは共通パッケージ化しません。
