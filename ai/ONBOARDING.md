@@ -14,6 +14,7 @@
 4. Standardから重要な逸脱をする場合は、プロジェクト側で理由（ADR等）を残すこと。
 5. 新しいStandardやレイアウト・共通実装を「将来使うかもしれない」という理由だけで増やさないこと。
 6. **新しいライブラリ・パッケージを追加する前に [Recommendations](../recommendations/) を確認すること。** 未収録のものを導入する場合は、健全性チェックの結果を短く提示してから追加すること。
+7. **実装に入る前に、対象プロジェクトの `decisions/project-context.md` があれば読むこと。** 対象ユーザー、認証の要否、主対象デバイス、認可の粒度といった前提を勝手に仮定しないこと。存在しない場合でも無関係な小規模修正は止めず、前提がタスクの設計を実質的に左右する場合だけ確認すること。その他のプロジェクト側ADRは、関連するタスクを扱う場合のみ読むこと。
 
 ---
 
@@ -23,6 +24,8 @@
 AIと人間の行動規範、モデル選定、レビュー方針、Standard追加時の判断について:
 
 👉 [Governance & Rules](../standards/governance/)
+
+リポジトリの立ち上げや、既存リポジトリのStandard適合を行う場合のみ、Governanceから `standards/governance/optional/project-setup.md` へ進むこと。
 
 ### 2. バックエンド・技術構成・認証・ログ・API
 Django構成、Reactの責務、OIDC、認可、Security、Logging、Testing、API利用基準など:
