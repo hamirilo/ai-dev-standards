@@ -66,7 +66,9 @@ Themeを定義・変更する場合の詳細は [Theme Customization](optional/t
 - 社員選択: `UserPicker` / `EmployeeSearch`
 - 組織・部署選択: `DepartmentPicker` / `OrganizationTree`
 
-`DatePicker`, `DataTable`, `Dialog`, `Toast` などの汎用UIはDomain Componentとして扱わない。まず `shadcn/ui` や既存ライブラリ、プロジェクト内の既存実装を利用する。
+`DatePicker`, `DataTable`, `Dialog`, `Toast` などの汎用UIはDomain Componentとして扱わない。まず `shadcn/ui` やプロジェクト内の既存実装を利用する。
+
+動画、画像ギャラリー、チャート、地図など `shadcn/ui` で解決しない領域のライブラリ選定は [Recommendations](../../recommendations/frontend.md) を参照する。
 
 ---
 

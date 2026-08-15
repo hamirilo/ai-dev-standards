@@ -13,6 +13,7 @@
 3. 最初からすべてのドキュメントを読まないこと。**タスクに必要なCore Standardだけを読み、Optional Standardは該当機能を扱う場合のみ読むこと。**
 4. Standardから重要な逸脱をする場合は、プロジェクト側で理由（ADR等）を残すこと。
 5. 新しいStandardやレイアウト・共通実装を「将来使うかもしれない」という理由だけで増やさないこと。
+6. **新しいライブラリ・パッケージを追加する前に [Recommendations](../recommendations/) を確認すること。** 未収録のものを導入する場合は、健全性チェックの結果を短く提示してから追加すること。
 
 ---
 
@@ -37,6 +38,13 @@ Django構成、Reactの責務、OIDC、認可、Security、Logging、Testing、A
 👉 [Application UI Standard](../standards/application-ui/)
 
 詳細なTheme設定やAIによる画面デザインなど、該当するOptional Standardがある場合のみApplication UI Standardから参照すること。
+
+### 4. ライブラリ選定（Standardではない）
+動画、画像、チャート、地図、アイコン等、`shadcn/ui` で解決しない領域の既定と、非推奨ライブラリについて:
+
+👉 [Recommendations](../recommendations/)
+
+依存を追加・変更する場合のみ読むこと。Standardと異なり拘束力は弱く、逸脱にADRを求めない。
 
 ---
 
