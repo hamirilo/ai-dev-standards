@@ -27,7 +27,7 @@
 
 - Pythonの環境・依存管理は **uv** で統一する。
 - 依存はロックファイル（`uv.lock`、`bun.lock` 等）で固定し、Gitへコミットする。
-- JS側のパッケージマネージャ・ビルドツールはプロジェクト間で統一し、無秩序に変えない。現時点で何に統一しているかは [Recommendations / Toolchain](../../recommendations/tooling.md) で管理する。
+- JS側は、同一リポジトリ内でパッケージマネージャやロックファイルを混在させない。新規プロジェクトの既定は [Recommendations / Toolchain](../../recommendations/tooling.md) を参照する。
 
 ---
 
