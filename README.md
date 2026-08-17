@@ -38,7 +38,7 @@
 開発Standardは ../ai-dev-standards/ai/ONBOARDING.md を最初に読むこと。
 ```
 
-バージョンは固定せず、常に最新のmainを参照します。
+開発中は最新のmainを参照してよいものとします。ただし、同じ判断を再現したい作業やドキュメント生成では、release tagまたはcommitを指定します。各アプリへsubmoduleや実行時依存として組み込む必要はありません。
 
 ## Standard以外の配置先
 
@@ -48,7 +48,18 @@ Standardへ置かない判断や実装資産の主な配置先です。
 |---|---|---|
 | **Domain Components** | EmployeePicker等、業務ドメイン固有の再利用UI | 所有するドメイン／プロジェクトで管理 |
 | **Recommendation** | サードパーティライブラリの既定、品質向上の推奨チェック | [recommendations/](recommendations/) |
-| **Shared implementation** | 複数プロジェクトで再利用するコード | 実際の重複が確認された場合のみ分離を検討 |
+| **Playbook / Starter** | 詳細な実装手順、検証方法、失敗例、新規プロジェクトの開始点 | ai-dev-playbook（Standardとは別リポジトリ。必要時のみ参照） |
+| **Application UI Kit** | 汎用UIの設計参照、実装コード、Storybook | application-ui-kit（Standardとは別リポジトリ／パッケージ） |
+
+### Recommendation・Playbook・UI Kitの境界
+
+| 層 | 答える質問 | 置き場所 |
+|---|---|---|
+| Recommendation | 現時点で何を選ぶか | ai-dev-standards |
+| Playbook | どう実施するか | ai-dev-playbook |
+| UI Kit | どのデザイン・実装を再利用するか | application-ui-kit |
+
+Recommendationは短い現在の既定、Playbookは詳細な手順・検証・失敗例です。UI KitはClaude Design向けの設計参照と、再利用可能なUI実装を管理します。これらをStandardへ取り込んで常時読ませません。
 
 未整備のレイヤーが受け皿になる判断は、整備されるまで各プロジェクト側で行い、重要な選定はプロジェクト側のADR等に記録します。AIは存在しないレイヤーを探索しません。
 
@@ -56,12 +67,14 @@ Standardへ置かない判断や実装資産の主な配置先です。
 
 1. **AIファースト・ルーター**: すべてのドキュメントを最初からAIに読ませるのではなく、`ai/ONBOARDING.md` を起点として、タスクに必要なStandardだけを読ませるようにします。
 2. **Standardからの逸脱は許容する**: Standardは強いデフォルトですが、絶対的な制約ではありません。あえて異なる技術選定をするなど、重要な逸脱を行った場合は、プロジェクト側のADRとして「なぜ外れたのか」を記録します。
-3. **実装との分離**: 本リポジトリにはUIコンポーネント（EmployeePicker等）やプロジェクト雛形の「実コード」は置きません。基本UIは各プロジェクトで shadcn/ui を利用し、業務ドメイン固有の共有UIはそのドメインを所有する側で管理します。その他の共通実装も実際の重複が確認されてから必要に応じて分離します。
+3. **実装との分離**: 本リポジトリにはUIコンポーネント（EmployeePicker等）やプロジェクト雛形の「実コード」は置きません。基本UIは shadcn/ui を基礎とする採用済みの Application UI Kit または各プロジェクトで管理し、業務ドメイン固有の共有UIはそのドメインを所有する側で管理します。Playbook、Starter、UI実装は、それぞれの外部資産リポジトリで管理します。
 4. **繰り返しがないものを先回りして標準化しない**: 「将来必要になるかもしれない」だけでStandard、Template、Shared実装を増やしません。
 
 ## Standardへ追加する前に
 
 追加基準と配置先の判断は [ADR-0003](decisions/adr-0003-core-and-optional-standards.md) を正とします。要点は「複数プロジェクトで繰り返しが確認された判断だけを、Core / Optional / Standard以外の適切な場所へ置く」ことです。基準の重複記載による記述ドリフトを避けるため、本READMEには基準の詳細を再掲しません。
+
+共有資産をStandardへ取り込まない境界と、Standard・Playbook・UI Kitの分離理由は [ADR-0004](decisions/adr-0004-shared-asset-boundaries.md) を参照してください。
 
 ## 意図的に扱わないもの
 
