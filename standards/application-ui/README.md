@@ -7,13 +7,13 @@
 
 ## 1. UIの基本原則
 
-- **基本UI**: Reactの基本UIコンポーネントには、原則として `shadcn/ui` を使用する。既存コンポーネントで要件を満たせる場合は独自Primitiveを再実装しない。
+- **基本UI**: Reactの基本UIコンポーネントは、原則として `shadcn/ui` を基礎にする。プロジェクトが `application-ui-kit` 等の採用済みUI実装を利用している場合は、その実装を優先し、同じPrimitiveを再実装しない。
 - **Primary Action**: 画面の主操作は、原則としてPage Header付近の分かりやすい位置（通常は右側）に置く。
 - **通知**: `alert()` を通常の通知に使わず、保存成功などの補助的なフィードバックにはToastを使う。
 - **破壊的操作**: `confirm()` に依存せず、重要な削除等はConfirm Dialog等で意図を確認する。
 - **Empty State**: データがない場合は状態を明示し、有効な次の操作がある場合のみ提示する。
 - **基本操作性**: キーボード操作やフォーカス表示など、利用しているUI Componentのアクセシビリティ上の振る舞いを不用意に壊さない。
-- **先行抽象化を避ける**: 共通UIライブラリや独自Design Systemを前提にせず、実際の繰り返しが確認されるまで不要なラッパーや共通化を増やさない。
+- **先行抽象化を避ける**: UI Kitを導入すること自体を目的にせず、実際の繰り返しが確認されるまで不要なラッパーや共通化を増やさない。採用済みのUI Kitがある場合は再実装せず利用する。
 
 ---
 
@@ -76,15 +76,15 @@ Themeを定義・変更する場合の詳細は [Theme Customization](optional/t
 - 社員選択: `UserPicker` / `EmployeeSearch`
 - 組織・部署選択: `DepartmentPicker` / `OrganizationTree`
 
-`DatePicker`, `DataTable`, `Dialog`, `Toast` などの汎用UIはDomain Componentとして扱わない。まず `shadcn/ui` やプロジェクト内の既存実装を利用する。
+`DatePicker`, `DataTable`, `Dialog`, `Toast` などの汎用UIはDomain Componentとして扱わない。まず `shadcn/ui`、採用済みのApplication UI Kit、またはプロジェクト内の既存実装を利用する。
 
 動画、画像ギャラリー、チャート、地図など `shadcn/ui` で解決しない領域のライブラリ選定は [Recommendations](../../recommendations/frontend.md) を参照する。
 
 ---
 
-## 7. Layouts — Template Standard
+## 7. Layout Profiles
 
-新規画面・アプリは、原則として **Standard App / Simple App / Focus App** のいずれかを起点にする。これらは参考例ではなく、ナビゲーションや主要操作位置を揃えるためのテンプレート標準とする。
+新規画面・アプリは、原則として **Standard App / Simple App / Focus App** のいずれかを起点にする。これらは実装コードをコピーするTemplateではなく、ナビゲーションや主要操作位置を揃えるためのLayout Profileとして扱う。実装テンプレートやStarterは別の資産として管理する。
 
 ### Standard App
 
@@ -134,6 +134,17 @@ Themeを定義・変更する場合の詳細は [Theme Customization](optional/t
 既存3レイアウトで足りない場合も、まず最も近いレイアウトを拡張する。それでも適合しない明確なUX上の理由がある場合だけプロジェクト固有Layoutを作り、同じ派生が複数プロジェクトで繰り返された場合にStandardへの昇格を検討する。
 
 ---
+
+## 8. デザイン参照と実装資産の境界
+
+本Standardは、UIの判断原則・利用場面・操作の一貫性を定義します。次の資産は本リポジトリへ移しません。
+
+- Claude Designや人間向けの設計参照: 採用済みApplication UI Kitのdesign-system/
+- 再利用可能な実装: Application UI KitのUI package
+- 使用例・状態確認・視覚検証: Application UI KitのStorybook
+- 社員検索や組織ツリーなどの業務ドメインUI: 各アプリまたはドメイン所有側
+
+UI Kitの全コンポーネント仕様や実装手順をStandardへ重複して記載しないでください。Standardから参照が必要な場合も、該当するタスクでのみUI Kitを追加で読みます。
 
 ## Optional Standards
 
