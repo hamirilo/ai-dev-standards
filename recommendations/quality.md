@@ -75,7 +75,7 @@ Lighthouseなどのラボ計測は変更による回帰確認に使い、可能�
 - ページ全体へ不要なJavaScriptを送らず、React Islandの責務とバンドルサイズを確認する。
 - 既存のライブラリ・共通実装・設定を調べてから新しい仕組みを追加する。
 
-これらの具体的な調査・修正・検証手順は [hamirilo/ai-dev-playbook](https://github.com/hamirilo/ai-dev-playbook) から、該当する手順を必要なときだけ参照します。
+これらの具体的な調査・修正・検証手順は [ai-dev-playbook](https://github.com/hamirilo/ai-dev-playbook) から、該当する手順を必要なときだけ参照します。
 
 ## 実施するタイミング
 
