@@ -48,16 +48,16 @@ Standardへ置かない判断や実装資産の主な配置先です。
 |---|---|---|
 | **Domain Components** | EmployeePicker等、業務ドメイン固有の再利用UI | 所有するドメイン／プロジェクトで管理 |
 | **Recommendation** | サードパーティライブラリの既定 | [recommendations/](recommendations/) |
-| **Playbook / Starter** | 詳細な実装手順、検証方法、失敗例、新規プロジェクトの開始点 | hamirilo/ai-dev-playbook（Standardとは別リポジトリ。必要時のみ参照） |
-| **Application UI Kit** | 汎用UIの設計参照、実装コード、Storybook | hamirilo/application-ui-kit（Standardとは別リポジトリ／パッケージ） |
+| **Playbook / Starter** | 詳細な実装手順、検証方法、失敗例、新規プロジェクトの開始点 | ai-dev-playbook（Standardとは別リポジトリ。必要時のみ参照） |
+| **Application UI Kit** | 汎用UIの設計参照、実装コード、Storybook | application-ui-kit（Standardとは別リポジトリ／パッケージ） |
 
 ### Recommendation・Playbook・UI Kitの境界
 
 | 層 | 答える質問 | 置き場所 |
 |---|---|---|
 | Recommendation | 現時点で何を選ぶか | ai-dev-standards |
-| Playbook | どう実施するか | hamirilo/ai-dev-playbook |
-| UI Kit | どのデザイン・実装を再利用するか | hamirilo/application-ui-kit |
+| Playbook | どう実施するか | ai-dev-playbook |
+| UI Kit | どのデザイン・実装を再利用するか | application-ui-kit |
 
 Recommendationは短い現在の既定、Playbookは詳細な手順・検証・失敗例です。UI KitはClaude Design向けの設計参照と、再利用可能なUI実装を管理します。これらをStandardへ取り込んで常時読ませません。
 
