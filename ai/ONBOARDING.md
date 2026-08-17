@@ -51,6 +51,12 @@ Django構成、Reactの責務、OIDC、認可、Security、Logging、Testing、A
 
 ---
 
+## 必須ではない品質推奨
+
+性能、アクセシビリティ、実ブラウザでの操作性を高める確認は、該当する画面や変更の規模に応じて [Quality Recommendations](../recommendations/quality.md) を参照してください。
+
+これは必守事項やリリースゲートではありません。実施した場合は結果と未確認事項を報告し、100点のために機能や利用者体験を犠牲にしないでください。実施手順は [品質確認プレイブック](https://github.com/hamirilo/ai-dev-playbook/blob/main/playbooks/quality-checks.md) を参照します。
+
 ## Standardを増やそうとしたとき
 
 追加基準と配置先（Core / Optional / Recommendation / Shared implementation / Project側）の判断は、[ADR-0003: StandardsをCoreとOptionalに分離する](../decisions/adr-0003-core-and-optional-standards.md) を正として従ってください。
