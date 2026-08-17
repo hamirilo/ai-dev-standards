@@ -7,7 +7,7 @@
 
 ## 1. UIの基本原則
 
-- **基本UI**: Reactの基本UIコンポーネントは、原則として `shadcn/ui` を基礎にする。プロジェクトが `hamirilo/application-ui-kit` 等の採用済みUI実装を利用している場合は、その実装を優先し、同じPrimitiveを再実装しない。
+- **基本UI**: Reactの基本UIコンポーネントは、原則として `shadcn/ui` を基礎にする。プロジェクトが `application-ui-kit` 等の採用済みUI実装を利用している場合は、その実装を優先し、同じPrimitiveを再実装しない。
 - **Primary Action**: 画面の主操作は、原則としてPage Header付近の分かりやすい位置（通常は右側）に置く。
 - **通知**: `alert()` を通常の通知に使わず、保存成功などの補助的なフィードバックにはToastを使う。
 - **破壊的操作**: `confirm()` に依存せず、重要な削除等はConfirm Dialog等で意図を確認する。
