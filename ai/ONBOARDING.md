@@ -15,6 +15,7 @@
 5. 新しいStandardやレイアウト・共通実装を「将来使うかもしれない」という理由だけで増やさないこと。
 6. **新しいライブラリ・パッケージを追加する前に [Recommendations](../recommendations/) を確認すること。** 未収録のものを導入する場合は、健全性チェックの結果を短く提示してから追加すること。
 7. **実装に入る前に、対象プロジェクトの `decisions/project-context.md` があれば読むこと。** 対象ユーザー、認証の要否、主対象デバイス、認可の粒度といった前提を勝手に仮定しないこと。存在しない場合でも無関係な小規模修正は止めず、前提がタスクの設計を実質的に左右する場合だけ確認すること。その他のプロジェクト側ADRは、関連するタスクを扱う場合のみ読むこと。
+8. **対象プロジェクトで定義されている型チェック、Linter、Build、基本テストを通過させること。** これらは該当する場合、PR・マージ・リリースの必須ゲートです。
 
 ---
 
@@ -51,11 +52,17 @@ Django構成、Reactの責務、OIDC、認可、Security、Logging、Testing、A
 
 ---
 
-## 必須ではない品質推奨
+## 必須基準と品質推奨
 
-性能、アクセシビリティ、実ブラウザでの操作性を高める確認は、該当する画面や変更の規模に応じて [Quality Recommendations](../recommendations/quality.md) を参照してください。
+### 必須基準
 
-これは必守事項やリリースゲートではありません。実施した場合は結果と未確認事項を報告し、100点のために機能や利用者体験を犠牲にしないでください。実施手順は [品質確認プレイブック](https://github.com/hamirilo/ai-dev-playbook/blob/main/playbooks/quality-checks.md) を参照します。
+対象プロジェクトで定義されている型チェック（TypeScriptでは `tsc --noEmit` 等）、Linter、Build、基本テストは、該当する場合にPR・マージ・リリースの必須ゲートとします。CIで自動検証し、エラーを解消してから先へ進みます。
+
+### 品質推奨
+
+性能、アクセシビリティ、実ブラウザでの操作性を高める確認は [Quality Recommendations](../recommendations/quality.md) を参照してください。Lighthouse、Core Web Vitals、N+1クエリ対策、高度なパフォーマンス最適化はSoft Targetであり、通常はリリースブロッカーにしません。
+
+AIエージェントは品質推奨を常時適用せず、ユーザーから明示的な指示がある場合、または大規模なUI・パフォーマンス変更を行う場合に参照・適用します。実施手順は [hamirilo/ai-dev-playbook](https://github.com/hamirilo/ai-dev-playbook) から、該当する手順を必要なときだけ参照します。
 
 ## Standardを増やそうとしたとき
 
