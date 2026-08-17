@@ -59,6 +59,19 @@ Lighthouseなどのラボ計測は変更による回帰確認に使い、可能�
 - 動きが必要以上に強くなく、reduced motionの設定を妨げない
 - 画像やアイコンが意味を持つ場合は代替テキストや適切なラベルがある
 
+## 実装品質
+
+画面の見た目だけでなく、サーバー・データアクセス・フロントエンドの実装品質も確認します。
+
+- 一覧や詳細画面では、関連データの取得がN+1クエリになっていないか確認する。
+- Reactの共有実装では、JavaScriptではなくTypeScriptを基本とし、ReactコンポーネントはTSXで記述する。
+- typecheck、lint、formatter、テストなど、機械的に判定できる問題はツールで先に検出する。
+- APIやサーバーから受け取る値は、TypeScriptの型だけに頼らず、必要な境界で実行時検証も行う。
+- ページ全体へ不要なJavaScriptを送らず、React Islandの責務とバンドルサイズを確認する。
+- 既存のライブラリ・共通実装・設定を調べてから新しい仕組みを追加する。
+
+これらの具体的な調査・修正・検証手順は [AI Development Playbookの品質確認](https://github.com/hamirilo/ai-dev-playbook/blob/main/playbooks/quality-checks.md) に置きます。
+
 ## 実施するタイミング
 
 毎回すべてを実施する必要はありません。次の変更では優先度を上げます。
