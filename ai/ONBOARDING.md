@@ -62,7 +62,7 @@ Django構成、Reactの責務、OIDC、認可、Security、Logging、Testing、A
 
 性能、アクセシビリティ、実ブラウザでの操作性を高める確認は [Quality Recommendations](../recommendations/quality.md) を参照してください。Lighthouse、Core Web Vitals、N+1クエリ対策、高度なパフォーマンス最適化はSoft Targetであり、通常はリリースブロッカーにしません。
 
-AIエージェントは品質推奨を常時適用せず、ユーザーから明示的な指示がある場合、または大規模なUI・パフォーマンス変更を行う場合に参照・適用します。実施手順は [hamirilo/ai-dev-playbook](https://github.com/hamirilo/ai-dev-playbook) から、該当する手順を必要なときだけ参照します。
+AIエージェントは品質推奨を常時適用せず、ユーザーから明示的な指示がある場合、または大規模なUI・パフォーマンス変更を行う場合に参照・適用します。実施手順は [ai-dev-playbook](https://github.com/hamirilo/ai-dev-playbook) から、該当する手順を必要なときだけ参照します。
 
 ## Standardを増やそうとしたとき
 
