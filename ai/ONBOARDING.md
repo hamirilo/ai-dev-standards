@@ -63,6 +63,7 @@ UIを実装するプロジェクトがapplication-ui-kitを採用している場
 - Storybook: 使用例・状態確認・視覚検証
 
 業務ドメイン固有のUIは、引き続き各アプリまたはドメイン所有側で管理します。
+
 ## Standardを増やそうとしたとき
 
 追加基準と配置先（Core / Optional / Recommendation / Shared implementation / Project側）の判断は、[ADR-0003: StandardsをCoreとOptionalに分離する](../decisions/adr-0003-core-and-optional-standards.md) を正として従ってください。

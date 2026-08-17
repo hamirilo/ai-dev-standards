@@ -145,6 +145,7 @@ Themeを定義・変更する場合の詳細は [Theme Customization](optional/t
 - 社員検索や組織ツリーなどの業務ドメインUI: 各アプリまたはドメイン所有側
 
 UI Kitの全コンポーネント仕様や実装手順をStandardへ重複して記載しないでください。Standardから参照が必要な場合も、該当するタスクでのみUI Kitを追加で読みます。
+
 ## Optional Standards
 
 該当する作業を行う場合のみ参照する。
