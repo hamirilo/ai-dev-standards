@@ -18,7 +18,7 @@ Optional StandardとRecommendationの判別基準は [ADR-0003](../decisions/adr
 
 Recommendationは「現時点で何を選ぶか」を短く記録します。既定、適用範囲、確認日、選定理由の要約を置きます。
 
-Playbookは「それをどう実施するか」を扱います。詳細な手順、コード例、検証方法、失敗例、トラブルシューティングはhamirilo/ai-dev-playbookへ置き、Recommendationへ重複して記載しません。
+Playbookは「それをどう実施するか」を扱います。詳細な手順、コード例、検証方法、失敗例、トラブルシューティングはai-dev-playbookへ置き、Recommendationへ重複して記載しません。
 
 Recommendationの項目が実装手順の説明を必要とする場合は、結論だけをRecommendationに残し、詳細をPlaybookへ分離します。
 
