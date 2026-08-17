@@ -15,7 +15,7 @@
 5. 新しいStandardやレイアウト・共通実装を「将来使うかもしれない」という理由だけで増やさないこと。
 6. **新しいライブラリ・パッケージを追加する前に [Recommendations](../recommendations/) を確認すること。** 未収録のものを導入する場合は、健全性チェックの結果を短く提示してから追加すること。
 7. **実装に入る前に、対象プロジェクトの `decisions/project-context.md` があれば読むこと。** 対象ユーザー、認証の要否、主対象デバイス、認可の粒度といった前提を勝手に仮定しないこと。存在しない場合でも無関係な小規模修正は止めず、前提がタスクの設計を実質的に左右する場合だけ確認すること。その他のプロジェクト側ADRは、関連するタスクを扱う場合のみ読むこと。
-8. **詳細な実装手順や検証方法をStandardへ追加しないこと。** 必要な場合はhamirilo/ai-dev-playbookを参照し、再利用可能なUI設計・実装はhamirilo/application-ui-kitを参照すること。どちらも該当タスクのときだけ読むこと。
+8. **詳細な実装手順や検証方法をStandardへ追加しないこと。** 必要な場合はai-dev-playbookを参照し、再利用可能なUI設計・実装はapplication-ui-kitを参照すること。どちらも該当タスクのときだけ読むこと。
 
 ---
 
@@ -54,9 +54,9 @@ Django構成、Reactの責務、OIDC、認可、Security、Logging、Testing、A
 
 ### 5. 詳細手順・UI資産（必要時のみ）
 
-詳細な実装手順、検証方法、失敗例、新規アプリの開始点は、Standardへ追加せずhamirilo/ai-dev-playbookで管理します。
+詳細な実装手順、検証方法、失敗例、新規アプリの開始点は、Standardへ追加せずai-dev-playbookで管理します。
 
-UIを実装するプロジェクトがhamirilo/application-ui-kitを採用している場合は、次を必要に応じて参照します。
+UIを実装するプロジェクトがapplication-ui-kitを採用している場合は、次を必要に応じて参照します。
 
 - design-system/: Claude Designや人間向けの設計参照
 - UI package: 再利用可能な実装
