@@ -12,11 +12,11 @@ AI開発では、同じ判断・調査・実装・UI検討を繰り返さない�
 
 1. ai-dev-standardsは、AIが通常タスクで読む少数の判断原則を管理する。Core Standardの領域はGovernance、Architecture、Application UIの3つとする。
 2. Recommendationは現時点の選択を短く記録する。詳細な実装手順、コード例、検証方法、失敗例はRecommendationへ置かない。
-3. 詳細な実装知識とStarterは、ai-dev-playbookとしてStandardとは別に管理する。Playbookは必要なタスクでのみ参照する。
-4. 汎用UIの設計参照、UI実装、Storybookはapplication-ui-kitとしてStandardとは別に管理する。Claude Designへ渡す設計参照は、UI Kit内のdesign-system/ディレクトリに自己完結させる。
+3. 詳細な実装知識とStarterは、hamirilo/ai-dev-playbookとしてStandardとは別に管理する。Playbookは必要なタスクでのみ参照する。
+4. 汎用UIの設計参照、UI実装、Storybookはhamirilo/application-ui-kitとしてStandardとは別に管理する。Claude Designへ渡す設計参照は、UI Kit内のdesign-system/ディレクトリに自己完結させる。
 5. 社員検索、組織ツリー、Authentik連携などの業務ドメインUIは、各アプリまたはドメイン所有側で管理する。
 6. ai-dev-foundationのような全資産を集約する単一モノレポは作らない。各リポジトリは同じ公開方針にできるが、利用方法・更新頻度・配布方法の違いを優先して分離する。
-7. application-ui-kitの内部で複数の配布単位が必要になった場合は、そのリポジトリだけをモノレポ化する。StandardやPlaybookと同じリポジトリへ戻さない。
+7. hamirilo/application-ui-kitの内部で複数の配布単位が必要になった場合は、そのリポジトリだけをモノレポ化する。StandardやPlaybookと同じリポジトリへ戻さない。
 8. 各アプリには共有資産をサブモジュールとして持たせない。StandardとPlaybookは参照、UI Kitはパッケージ依存を基本とする。
 
 ## 境界
@@ -25,9 +25,9 @@ AI開発では、同じ判断・調査・実装・UI検討を繰り返さない�
 |---|---|---|
 | 判断原則 | ai-dev-standards | AIが必要なCore/Optionalを参照 |
 | 現時点の選択 | ai-dev-standardsのRecommendation | 新規採用時に参照 |
-| 詳細手順・検証・失敗例 | ai-dev-playbook | タスク単位で参照 |
-| UI設計参照 | application-ui-kit/design-system/ | Claude Designや人間が参照 |
-| UI実装 | application-ui-kit | パッケージとして利用 |
+| 詳細手順・検証・失敗例 | hamirilo/ai-dev-playbook | タスク単位で参照 |
+| UI設計参照 | hamirilo/application-ui-kit/design-system/ | Claude Designや人間が参照 |
+| UI実装 | hamirilo/application-ui-kit | パッケージとして利用 |
 | 業務ドメインUI | 各アプリ・ドメイン所有側 | そのアプリの要件に合わせて実装 |
 
 ## 結果
