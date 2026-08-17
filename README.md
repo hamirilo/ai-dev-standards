@@ -14,7 +14,7 @@
 | `standards/governance/` | **人・AIはどう行動するか** | AI利用方針、Git運用、Standard逸脱時のルール |
 | `standards/architecture/` | **システムをどう作るか** | Django/PostgreSQL/React Islands等の技術選定、ファイル構成、権限管理 |
 | `standards/application-ui/` | **画面構造・操作の一貫性** | UIの基本原則、Layouts定義（画面レイアウトのパターン）、コンポーネント利用方針 |
-| `recommendations/` | **現時点で何を使うか（Standardではない）** | サードパーティライブラリの既定、非推奨ライブラリ、ツールチェーン |
+| `recommendations/` | **現時点で何を使うか・何を確認するか（Standardではない）** | サードパーティライブラリの既定、品質向上の推奨チェック、非推奨ライブラリ、ツールチェーン |
 | `decisions/` | **ADR (アーキテクチャ決定記録)** | なぜ現在のStandardやArchitectureになったのかを説明する重要な過去の技術決定の背景 |
 
 ## Core と Optional
@@ -47,7 +47,7 @@ Standardへ置かない判断や実装資産の主な配置先です。
 | レイヤー | 内容 | 現状 |
 |---|---|---|
 | **Domain Components** | EmployeePicker等、業務ドメイン固有の再利用UI | 所有するドメイン／プロジェクトで管理 |
-| **Recommendation** | サードパーティライブラリの既定 | [recommendations/](recommendations/) |
+| **Recommendation** | サードパーティライブラリの既定、品質向上の推奨チェック | [recommendations/](recommendations/) |
 | **Shared implementation** | 複数プロジェクトで再利用するコード | 実際の重複が確認された場合のみ分離を検討 |
 
 未整備のレイヤーが受け皿になる判断は、整備されるまで各プロジェクト側で行い、重要な選定はプロジェクト側のADR等に記録します。AIは存在しないレイヤーを探索しません。
