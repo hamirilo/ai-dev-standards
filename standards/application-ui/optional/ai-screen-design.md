@@ -2,7 +2,7 @@
 
 このOptional Standardは、Claude Design等のAIへ画面デザインを依頼する場合に参照します。
 
-大規模なAI専用Design Systemや詳細な画面テンプレートをCore Standardへ追加しません。プロジェクトがhamirilo/application-ui-kitを採用している場合は、そのdesign-system/ディレクトリを画面設計の追加参照資料としてAIへ渡します。ここでは設計参照の使い方だけを定義し、具体的な実装コードは扱いません。
+大規模なAI専用Design Systemや詳細な画面テンプレートをCore Standardへ追加しません。プロジェクトがapplication-ui-kitを採用している場合は、そのdesign-system/ディレクトリを画面設計の追加参照資料としてAIへ渡します。ここでは設計参照の使い方だけを定義し、具体的な実装コードは扱いません。
 
 ## 方向性
 
