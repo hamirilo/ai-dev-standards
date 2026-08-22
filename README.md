@@ -16,6 +16,7 @@
 | `standards/application-ui/` | **画面構造・操作の一貫性** | UIの基本原則、Layouts定義（画面レイアウトのパターン）、コンポーネント利用方針 |
 | `recommendations/` | **現時点で何を使うか（Standardではない）** | サードパーティライブラリの既定、非推奨ライブラリ、ツールチェーン |
 | `decisions/` | **ADR (アーキテクチャ決定記録)** | なぜ現在のStandardやArchitectureになったのかを説明する重要な過去の技術決定の背景 |
+| `ROADMAP.md` | **作業予定と「やらない」判断** | 複数リポジトリ共通で1枚。着手する作業単位は各リポジトリのGitHub Issuesが持つ |
 
 ## Core と Optional
 
