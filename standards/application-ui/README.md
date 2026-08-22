@@ -8,6 +8,7 @@
 ## 1. UIの基本原則
 
 - **基本UI**: Reactの基本UIコンポーネントは、原則として `shadcn/ui` を基礎にする。プロジェクトが `application-ui-kit` 等の採用済みUI実装を利用している場合は、その実装を優先し、同じPrimitiveを再実装しない。
+- **独自ラッパー**: 採用済みUI実装や `shadcn/ui` を包む独自ラッパーは、複数箇所で共通の見た目・振る舞い・ポリシーを維持する必要がある場合に限って作る。Propsを素通しするだけのラッパーは作らない。
 - **Primary Action**: 画面の主操作は、原則としてPage Header付近の分かりやすい位置（通常は右側）に置く。
 - **通知**: `alert()` を通常の通知に使わず、保存成功などの補助的なフィードバックにはToastを使う。
 - **破壊的操作**: `confirm()` に依存せず、重要な削除等はConfirm Dialog等で意図を確認する。
@@ -69,7 +70,7 @@ Themeを定義・変更する場合の詳細は [Theme Customization](optional/t
 
 ## 6. Domain Components
 
-社員・組織・拠点など、特定の業務ドメインに意味を持つUIは、そのドメインを所有するプロジェクトで管理する。
+社員・組織・拠点など、特定の業務ドメインに意味を持つUIは、そのドメインを所有するプロジェクトで管理する。共通UIライブラリ側には置かない。
 
 例:
 
@@ -79,6 +80,14 @@ Themeを定義・変更する場合の詳細は [Theme Customization](optional/t
 `DatePicker`, `DataTable`, `Dialog`, `Toast` などの汎用UIはDomain Componentとして扱わない。まず `shadcn/ui`、採用済みのApplication UI Kit、またはプロジェクト内の既存実装を利用する。
 
 動画、画像ギャラリー、チャート、地図など `shadcn/ui` で解決しない領域のライブラリ選定は [Recommendations](../../recommendations/frontend.md) を参照する。
+
+### 他プロジェクトからの利用
+
+他のアプリが同じドメインの情報を必要とする場合は、所有プロジェクトが公開する連携境界を利用する。連携方式とデータ所有の原則は [Architecture Standard](../architecture/#8-api--システム間連携) を参照する。
+
+Domain Componentを、データ取得・認証・CSRF・エンドポイント設定を内包するUIパッケージとして共有しない。こうした都合を利用側へ持ち込むと結合が強くなる。
+
+同じUIが複数プロジェクトで実際に繰り返された場合は、データ連携と表示・操作を分離できることを確認した上で、共有の是非を検討する（[ADR-0003](../../decisions/adr-0003-core-and-optional-standards.md)）。1つ目の利用者しか存在しない段階では分離しない。
 
 ---
 
