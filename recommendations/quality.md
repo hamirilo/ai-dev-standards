@@ -77,6 +77,18 @@ Lighthouseなどのラボ計測は変更による回帰確認に使い、可能�
 
 これらの具体的な調査・修正・検証手順は [ai-dev-playbook](https://github.com/hamirilo/ai-dev-playbook) から、該当する手順を必要なときだけ参照します。
 
+## 日時の取り扱いの検査
+
+[Architecture Standard「時刻・タイムゾーン」](../standards/architecture/README.md#時刻タイムゾーン) が禁じる誤用パターンは、次の設定で機械的に検出できます。いずれも既存のLinter・テスト設定への数行の追加であり、画面単位の確認ではなくプロジェクトへの一度きりの導入です。日付境界の不具合は1日の特定時間帯しか再現しないため、レビューとテストだけに頼らずCIで止めます。
+
+- **ruffのDTZルール（flake8-datetimez）を有効にする。** `date.today()`（DTZ011）、naiveな `datetime.now()`（DTZ005）、naive datetimeの生成（DTZ001）を検出する。
+- **naive datetimeの `RuntimeWarning` をテストでエラー扱いにする。** pytestの `filterwarnings` へ `error:.*received a naive datetime` を追加する。フィクスチャ経由の混入もマージ前に止まる。
+- **`timezone.now().date()` をCIで検出する。** このパターンを検出する既製のlintルールはないため、grep等の1行で代用する。変数へ代入してから `.date()` を呼ぶ形は検出できないが、実際の混入の大半はリテラル形である。
+
+```bash
+! grep -rn "timezone\.now()\.date()" --include="*.py" apps/
+```
+
 ## 実施するタイミング
 
 毎回すべてを実施する必要はありません。次の変更では優先度を上げます。
