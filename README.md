@@ -12,7 +12,7 @@
 |---|---|---|
 | `ai/` | **AI エージェント向けルーター** | `ONBOARDING.md` (AIが最初に読むファイル。必守事項と各Standardへのリンク) |
 | `standards/governance/` | **人・AIはどう行動するか** | AI利用方針、Git運用、Standard逸脱時のルール |
-| `standards/architecture/` | **システムをどう作るか** | Django/PostgreSQL/React Islands等の技術選定、ファイル構成、権限管理 |
+| `standards/architecture/` | **システムをどう作るか** | Django/PostgreSQL/React Islands等の技術選定、ファイル構成、権限管理、コンテナと配布 |
 | `standards/application-ui/` | **画面構造・操作の一貫性** | UIの基本原則、Layouts定義（画面レイアウトのパターン）、コンポーネント利用方針 |
 | `recommendations/` | **現時点で何を使うか・何を確認するか（Standardではない）** | サードパーティライブラリの既定、品質向上の推奨チェック、非推奨ライブラリ、ツールチェーン |
 | `decisions/` | **ADR (アーキテクチャ決定記録)** | なぜ現在のStandardやArchitectureになったのかを説明する重要な過去の技術決定の背景 |

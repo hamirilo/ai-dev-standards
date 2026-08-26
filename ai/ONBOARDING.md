@@ -30,7 +30,7 @@ AIと人間の行動規範、モデル選定、レビュー方針、Standard追�
 リポジトリの立ち上げや、既存リポジトリのStandard適合を行う場合のみ、Governanceから `standards/governance/optional/project-setup.md` へ進むこと。
 
 ### 2. バックエンド・技術構成・認証・ログ・API
-Django構成、Reactの責務、OIDC、認可、Security、Logging、Testing、API利用基準など:
+Django構成、Reactの責務、OIDC、認可、Security、Logging、Testing、API利用基準、コンテナと配布など:
 
 👉 [Architecture Standard](../standards/architecture/)
 
