@@ -76,6 +76,8 @@ Recommendationは短い現在の既定、Playbookは詳細な手順・検証・�
 
 共有資産をStandardへ取り込まない境界と、Standard・Playbook・UI Kitの分離理由は [ADR-0004](decisions/adr-0004-shared-asset-boundaries.md) を参照してください。
 
+共有資産のリポジトリをフォークして採用する場合の運用（フォークにソース差分を持たない、配布物の識別子は公開時に所有者から導出する、組織固有のものは所有プロジェクトへ置く）は [ADR-0005](decisions/adr-0005-upstream-fork-operation.md) を参照してください。
+
 ## 意図的に扱わないもの
 
 次の領域は、現時点で本Standardの対象外です。繰り返しの判断が実際に発生し、統一しないことによる問題が確認された場合にのみ再検討します。

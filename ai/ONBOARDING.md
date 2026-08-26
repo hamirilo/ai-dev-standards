@@ -87,4 +87,4 @@ AIエージェントは品質推奨を常時適用せず、ユーザーから明
 ## 実装資産について
 
 本リポジトリは「判断の再利用」を扱い、実装コードは含みません。詳細手順・Starter・UI実装は、タスクに応じてそれぞれの外部資産を参照します。
-実装資産の境界は [README「Standard以外の配置先」](../README.md#standard以外の配置先) と [ADR-0004](../decisions/adr-0004-shared-asset-boundaries.md) を参照してください。
+実装資産の境界は [README「Standard以外の配置先」](../README.md#standard以外の配置先) と [ADR-0004](../decisions/adr-0004-shared-asset-boundaries.md) を参照してください。 共有資産のリポジトリをフォークして使っている場合は、フォークへ組織固有の差分を足さないでください（[ADR-0005](../decisions/adr-0005-upstream-fork-operation.md)）。
