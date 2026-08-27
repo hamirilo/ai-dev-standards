@@ -14,6 +14,10 @@ TypeScriptの型は実行時には消えるため、信頼境界から入るデ�
 - `safeParse` により、未信頼データを例外に依存せず明示的に検証できる。
 - このRecommendationの目的である「信頼境界で検証し、通過後に内部型として扱う」という利用形態に適している。
 
+確認日時点で最終リリース 4.4.3 (2026-05-04)、MIT。リリースは活発。
+
+**v3系とv4系でAPIが異なる。** 文字列フォーマットはトップレベル関数へ移動しており（`z.string().uuid()` ではなく `z.uuid()`）、Web上の記事は旧記法のものが多く残っている。v4の `z.uuid()` はRFC 9562/4122準拠を厳密に検証するため、v3の `z.string().uuid()` と同じ寛容さが必要な場合は `z.guid()` を使う。
+
 対象例:
 
 - APIレスポンス
@@ -36,7 +40,7 @@ TypeScriptの型は実行時には消えるため、信頼境界から入るデ�
 import { z } from "zod"
 
 const userSchema = z.object({
-  id: z.string().uuid(),
+  id: z.uuid(),
   name: z.string(),
 })
 

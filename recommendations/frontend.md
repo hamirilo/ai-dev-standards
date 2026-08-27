@@ -14,6 +14,7 @@
 |---|---|
 | Dialog、DatePicker、DataTable、Toast、Combobox等の基本UI | `shadcn/ui`（[Application UI Standard](../standards/application-ui/)） |
 | 日付選択 | `shadcn/ui` の Calendar。内部エンジンは React DayPicker のため、別途ライブラリを選定しない |
+| 通知（Toast） | `shadcn/ui` の Sonner。公式が従来の `toast` Componentを非推奨化しSonnerを後継としているため、別途ライブラリを選定しない |
 | セレクト・オートコンプリート | Native `<select>` または `shadcn/ui` の Combobox |
 | CSS | Tailwind CSS |
 
