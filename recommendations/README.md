@@ -107,7 +107,7 @@ Recommendationsに無い依存を追加する場合、**導入前に上記チェ
 
 ## 一覧
 
-- [Frontend Libraries](frontend.md) — 動画、画像、チャート、地図、D&D、アイコン
+- [Frontend Libraries](frontend.md) — 動画、画像、チャート、地図、D&D、アイコン、日付操作
 - [Runtime Validation](runtime-validation.md) — 信頼境界から入るデータの実行時検証
 - [Toolchain](tooling.md) — パッケージマネージャ等
 - [Quality Recommendations](quality.md) — 性能、アクセシビリティ、実ブラウザ確認
