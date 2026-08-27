@@ -15,6 +15,7 @@
 | Dialog、DatePicker、DataTable、Toast、Combobox等の基本UI | `shadcn/ui`（[Application UI Standard](../standards/application-ui/)） |
 | 日付選択 | `shadcn/ui` の Calendar。内部エンジンは React DayPicker のため、別途ライブラリを選定しない |
 | データテーブル（一覧の並び替え・絞り込み・ページネーション） | `shadcn/ui` の DataTable。内部エンジンは TanStack Table のため、別途ライブラリを選定しない |
+| 通知（Toast） | `shadcn/ui` の Sonner（`npx shadcn add sonner`）。公式が従来の `toast` Componentを非推奨化しSonnerを後継としているため、別途ライブラリを選定しない |
 | セレクト・オートコンプリート | Native `<select>` または `shadcn/ui` の Combobox |
 | CSS | Tailwind CSS |
 
@@ -105,6 +106,32 @@ GitHub star数は後述のPhotoSwipeより大幅に少ないが、star数は登�
 
 ---
 
+## Runtime Validation（信頼境界のデータ検証）
+
+**既定**: Zod — https://zod.dev/
+**ステータス**: 推奨 / **確認日**: 2026-08-27
+
+- [TypeScript / 型安全 Standard](../standards/architecture/typescript.md) は、信頼境界の実行時データをTypeScriptの型だけで信頼しないことを要求している。その実行時検証の手段の既定。
+- APIレスポンス、`json_script` 等でDjango Templateから渡されるJSON、URLパラメータ、localStorageなど、React Islandへ入るデータを境界で `safeParse` してから内部の型として扱う。型はスキーマから `z.infer` で導出し、型定義とバリデータを二重管理しない。
+- サーバー側はDjango Ninja（Pydantic）のため、スキーマはPythonとTypeScriptで別々に定義することになる。この二重定義は前提として受け入れ、スキーマ共有を目的とした生成基盤を先回りして作らない。
+- バンドルサイズが問題になる場合はtree-shake可能な `zod/mini` を利用できる。
+- 確認日時点で最終リリース 4.4.3 (2026-05-04)。**v3系とv4系はAPIが異なり、Web上の記事や周辺ライブラリの対応はv3前提のものが残っている。** 新規はv4を明示して採用する。
+
+---
+
+## 日付・時刻の操作
+
+**既定**: date-fns — https://date-fns.org/
+**ステータス**: 推奨 / **確認日**: 2026-08-27
+
+- **前提**: 日時の正となる計算・判定はサーバー側で行う（[Architecture Standard「時刻・タイムゾーン」](../standards/architecture/README.md#時刻タイムゾーン)）。期限判定、「今日」の決定、日付の集計をクライアントで再計算しない。端末のタイムゾーンと時計に依存するため、サーバーの判定と静かにズレる。
+- クライアント側に残る用途（入力補助、カレンダーの隣接ロジック、相対表示等）にdate-fnsを使う。`shadcn/ui` Calendarの内部エンジンであるReact DayPickerもdate-fnsを利用しており、依存が一本化できる。
+- 関数単位のimportで、immutable、tree-shakeが効く。
+- タイムゾーンを明示した表示が必要な場合は `@date-fns/tz` の `TZDate` を併用する（1.5.0 / 2026-05-21）。
+- 確認日時点で最終リリース 4.4.0 (2026-05-29)。
+
+---
+
 ## 非推奨
 
 新規採用しない。既存利用の即時書き換えは求めない。
@@ -119,5 +146,6 @@ GitHub star数は後述のPhotoSwipeより大幅に少ないが、star数は登�
 | **tom-select** | セレクト・自動補完 | ライブラリ自体は健全（2.6.2 / 2026-07-07）だが、独自スタイリングがデザインシステム統一の障壁になるため段階的に廃止する | Native `<select>` / `shadcn/ui` Combobox |
 | **Tabulator** | データテーブル | ライブラリ自体は健全（6.5.2 / 2026-06-23）だが、自前のCSSテーマで描画するためSemantic Tokenが効かず、デザインシステム統一の障壁になる。React連携も `react-tabulator` (0.21.0 / 2024-08) が本体に追随していない | `shadcn/ui` DataTable |
 | **Grid.js** | データテーブル | 最終リリース 6.2.0 (2024-03-03) で更新が停滞。`gridjs-react` はさらに古い (2024-01)。独自スタイリングの問題もTabulatorと同じ | `shadcn/ui` DataTable |
+| **Moment.js** | 日付操作 | 公式がメンテナンスモード（新機能開発の終了）を宣言済み。mutableなAPIとtree-shake不可のサイズも既知の問題 | date-fns |
 
 Vanilla JS の日付ピッカーは主要ライブラリが軒並みアーカイブ済であり、この領域は `shadcn/ui` Calendar へ集約する。
