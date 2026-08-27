@@ -4,7 +4,15 @@ TypeScriptの型は実行時には消えるため、信頼境界から入るデ�
 
 ## 既定
 
-**Zod** を既定とします。
+**Zod** — https://zod.dev/
+
+**ステータス**: 推奨 / **確認日**: 2026-08-27
+
+選定理由:
+
+- TypeScript中心のスキーマ定義から型を推論でき、検証ロジックと型定義の二重管理を減らせる。
+- `safeParse` により、未信頼データを例外に依存せず明示的に検証できる。
+- このRecommendationの目的である「信頼境界で検証し、通過後に内部型として扱う」という利用形態に適している。
 
 対象例:
 
@@ -36,7 +44,8 @@ type User = z.infer<typeof userSchema>
 
 const result = userSchema.safeParse(input)
 if (!result.success) {
-  // 境界データの不整合として処理する
+  // 実際の画面/API境界に合わせてエラー表示・ログ等へ変換する
+  return
 }
 
 const user: User = result.data
