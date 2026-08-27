@@ -34,7 +34,7 @@ Django構成、Reactの責務、OIDC、認可、Security、Logging、Testing、A
 
 👉 [Architecture Standard](../standards/architecture/)
 
-Docker Composeの `ports:`、サービス間接続、ホスト/LANへの公開境界を扱う場合は [Docker Compose ネットワークとポート公開](../standards/architecture/container-network.md) も読むこと。
+Docker Composeの `ports:`、サービス間接続、ホスト/LANへの公開境界を扱う場合は [Docker Compose ネットワークとポート公開](../standards/architecture/optional/container-network.md) も読むこと。
 
 特定機能にOptional Standardがある場合のみ、Architecture Standardから該当ファイルへ進むこと。
 例: 共通ダッシュボード向けのStatus APIを実装・利用する場合は `standards/architecture/optional/status-api.md` を読む。
