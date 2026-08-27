@@ -49,7 +49,7 @@ Docker Composeの `ports:`、サービス間接続、ホスト/LANへの公開�
 詳細なTheme設定やAIによる画面デザインなど、該当するOptional Standardがある場合のみApplication UI Standardから参照すること。
 
 ### 4. ライブラリ選定（Standardではない）
-動画、画像、チャート、地図、アイコン等、`shadcn/ui` で解決しない領域の既定と、非推奨ライブラリについて:
+動画、画像、チャート、地図、アイコン等、`shadcn/ui` で解決しない領域の既定、信頼境界の実行時検証、非推奨ライブラリについて:
 
 👉 [Recommendations](../recommendations/)
 
