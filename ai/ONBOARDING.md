@@ -34,6 +34,8 @@ Django構成、Reactの責務、OIDC、認可、Security、Logging、Testing、A
 
 👉 [Architecture Standard](../standards/architecture/)
 
+React IslandsやTypeScript実装、型エラー、API境界の型安全を扱う場合は [TypeScript / 型安全 Standard](../standards/architecture/typescript.md) も読むこと。
+
 Docker Composeの `ports:`、サービス間接続、ホスト/LANへの公開境界を扱う場合は [Docker Compose ネットワークとポート公開](../standards/architecture/optional/container-network.md) も読むこと。
 
 特定機能にOptional Standardがある場合のみ、Architecture Standardから該当ファイルへ進むこと。
