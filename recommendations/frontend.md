@@ -106,6 +106,19 @@ GitHub star数は後述のPhotoSwipeより大幅に少ないが、star数は登�
 
 ---
 
+## リッチテキストエディタ
+
+**既定**: TipTap — https://tiptap.dev/
+**ステータス**: 推奨 / **確認日**: 2026-08-27
+
+- ProseMirrorベースのheadlessエディタ。UIを持たないため、ツールバーを `shadcn/ui` で組めてSemantic Tokenと衝突しない。
+- 提供する機能の範囲、保存形式（JSONを正とする）、サニタイズの要求は [Optional Standard「リッチテキスト入力」](../standards/application-ui/optional/rich-text.md) に従う。
+- **コアと無料拡張（StarterKit等）の範囲で使う。** コラボ編集、コメント、AI連携等の有償・Cloud機能を前提にした設計をしない。MITライセンスなのはコアと基本拡張のみ。
+- HTMLのサニタイズはサーバー側で行う。Pythonでは **bleachを使わない**（2026-06-05に公式がメンテナンス終了を宣言、セキュリティ修正も終了）。既定はnh3（0.3.7 / 2026-08-23、Rust製ammoniaのバインディング）。
+- 確認日時点で最終リリース 3.30.5 (2026-08-26)。リリースは活発。
+
+---
+
 ## Runtime Validation（信頼境界のデータ検証）
 
 **既定**: Zod — https://zod.dev/
@@ -147,5 +160,7 @@ GitHub star数は後述のPhotoSwipeより大幅に少ないが、star数は登�
 | **Tabulator** | データテーブル | ライブラリ自体は健全（6.5.2 / 2026-06-23）だが、自前のCSSテーマで描画するためSemantic Tokenが効かず、デザインシステム統一の障壁になる。React連携も `react-tabulator` (0.21.0 / 2024-08) が本体に追随していない | `shadcn/ui` DataTable |
 | **Grid.js** | データテーブル | 最終リリース 6.2.0 (2024-03-03) で更新が停滞。`gridjs-react` はさらに古い (2024-01)。独自スタイリングの問題もTabulatorと同じ | `shadcn/ui` DataTable |
 | **Moment.js** | 日付操作 | 公式がメンテナンスモード（新機能開発の終了）を宣言済み。mutableなAPIとtree-shake不可のサイズも既知の問題 | date-fns |
+| **Draft.js** | リッチテキスト | Metaが2023-02にGitHubアーカイブ済み。開発終了 | TipTap |
+| **Quill** | リッチテキスト | 独自UI・独自CSSがデザインシステム統一の障壁になる（tom-selectと同じ理由）。保存形式も独自のDeltaで、他形式への変換資産が乏しい | TipTap |
 
 Vanilla JS の日付ピッカーは主要ライブラリが軒並みアーカイブ済であり、この領域は `shadcn/ui` Calendar へ集約する。
