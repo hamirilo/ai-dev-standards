@@ -201,3 +201,4 @@ multi-stage構成、ビルド時の設定・秘密情報、プラットフォー
 特定機能を扱う場合のみ参照します。
 
 - [Status API / Monitoring Contract](optional/status-api.md) — 共通ダッシュボード等からサービス状態を取得する場合
+- [Docker Compose ネットワークとポート公開](optional/container-network.md) — Docker Composeの `ports:`、サービス間接続、ホスト/LANへの公開境界を扱う場合
