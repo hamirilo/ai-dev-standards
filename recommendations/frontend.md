@@ -15,6 +15,7 @@
 | Dialog、DatePicker、DataTable、Toast、Combobox等の基本UI | `shadcn/ui`（[Application UI Standard](../standards/application-ui/)） |
 | 日付選択 | `shadcn/ui` の Calendar。内部エンジンは React DayPicker のため、別途ライブラリを選定しない |
 | 通知（Toast） | `shadcn/ui` の Sonner。公式が従来の `toast` Componentを非推奨化しSonnerを後継としているため、別途ライブラリを選定しない |
+| データテーブル（並び替え・絞り込み・ページネーション） | `shadcn/ui` の Table と TanStack Table を組み合わせる（[一覧画面](../standards/application-ui/optional/list-screens.md)）。別途ライブラリを選定しない |
 | セレクト・オートコンプリート | Native `<select>` または `shadcn/ui` の Combobox |
 | CSS | Tailwind CSS |
 
@@ -117,5 +118,6 @@ GitHub star数は後述のPhotoSwipeより大幅に少ないが、star数は登�
 | **Fancybox (`@fancyapps/ui`)** | 画像ギャラリー | 商用利用に有償ライセンスが必要。lightGalleryと同じ理由 | yet-another-react-lightbox |
 | **Plyr.js** | 動画プレイヤー | Web Components 非対応、HLS/CMAF パイプラインとの統合が困難。開発は継続しているが停滞（3.8.4 / 2026-01-03） | Media Chrome |
 | **tom-select** | セレクト・自動補完 | ライブラリ自体は健全（2.6.2 / 2026-07-07）だが、独自スタイリングがデザインシステム統一の障壁になるため段階的に廃止する | Native `<select>` / `shadcn/ui` Combobox |
+| **Tabulator** / **Grid.js** / **DataTables** | データテーブル | いずれも自前のCSSテーマで描画するためSemantic Tokenが効かず、デザインシステム統一の障壁になる（tom-selectと同じ理由）。Grid.jsは最終リリース 6.2.0 (2024-03-03) で更新も停滞、DataTablesはjQuery依存 | `shadcn/ui` Table + TanStack Table |
 
 Vanilla JS の日付ピッカーは主要ライブラリが軒並みアーカイブ済であり、この領域は `shadcn/ui` Calendar へ集約する。

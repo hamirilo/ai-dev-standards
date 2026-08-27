@@ -56,5 +56,6 @@ Core StandardのEmpty Stateに従い、次を区別する。
 
 ## 扱わないもの
 
+- ライブラリの選定 — [Recommendations](../../../recommendations/frontend.md)
 - Data Tableの具体的なセットアップ・API・バージョン移行 — ai-dev-playbook
 - Excel的なセル編集を伴う一覧 — 必要性が確認されたプロジェクトで個別に設計する
