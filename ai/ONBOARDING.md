@@ -88,8 +88,8 @@ Standardは原則として今後の判断、新規実装、変更箇所へ適用
 
 レビュー結果は次の3種類に分けます。
 
-1. **Required**: セキュリティ、データ整合性、必須CIゲート等に関わり、現在の問題として修正が必要。
-2. **Adopt going forward**: 既存方式は直ちに移行せず、新規・変更箇所からStandardへ寄せる。
+1. **Required**: 今回の新規・変更箇所でStandardに反するもの、またはセキュリティ、データ整合性、必須CIゲート等に関わり現在の問題として修正が必要なもの。
+2. **Adopt going forward**: 変更対象外の既存方式が現在のStandardと異なるもの。直ちに一括移行せず、今後その箇所を変更するときにStandardへ寄せる。
 3. **Optional improvement**: 品質向上、近代化、追加機能等。Standard適合とは分離し、必要なら通常のBacklogとして扱う。
 
 Optional Standardの発動条件に該当することは、その機能を新たに実装する義務を意味しません。例えばStatus APIのStandardが存在していても、Standardレビューだけを理由にStatus API機能を追加しません。
