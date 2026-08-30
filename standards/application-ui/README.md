@@ -79,7 +79,7 @@ Themeを定義・変更する場合の詳細は [Theme Customization](optional/t
 
 `DatePicker`, `DataTable`, `Dialog`, `Toast` などの汎用UIはDomain Componentとして扱わない。まず `shadcn/ui`、採用済みのApplication UI Kit、またはプロジェクト内の既存実装を利用する。
 
-動画、画像ギャラリー、チャート、地図など `shadcn/ui` で解決しない領域のライブラリ選定は [Recommendations](../../recommendations/frontend.md) を参照する。
+動画、画像ギャラリー、チャート、地図など `shadcn/ui` で解決しない領域のライブラリ選定は [Recommendations](../../../recommendations/frontend.md) を参照する。
 
 ### 他プロジェクトからの利用
 

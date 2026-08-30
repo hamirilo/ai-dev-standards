@@ -21,7 +21,7 @@
 - 全件をクライアントへ渡して処理してよいかは、ページングの有無だけでなく、データ量、権限、機密性、初期転送量を含めて判断する。
 - サーバー側処理とクライアント側処理を混在させる場合は、ユーザーが見ている結果集合と操作対象が一致することを確認する。
 
-大規模な一覧や性能問題を扱う場合、または明示的に性能確認を求められた場合は、N+1クエリ等について [Quality Recommendations](../../../recommendations/quality.md) を参照する。通常の小規模な一覧変更だけを理由に、Quality Recommendations全体を必須手順へ昇格させない。
+大規模な一覧や性能問題を扱う場合、または明示的に性能確認を求められた場合は、N+1クエリ等について [Quality Recommendations](../../../../recommendations/quality.md) を参照する。通常の小規模な一覧変更だけを理由に、Quality Recommendations全体を必須手順へ昇格させない。
 
 ## 3. 状態をURLへ反映する
 
@@ -56,6 +56,6 @@ Core StandardのEmpty Stateに従い、次を区別する。
 
 ## 扱わないもの
 
-- ライブラリの選定 — [Recommendations](../../../recommendations/frontend.md)
+- ライブラリの選定 — [Recommendations](../../../../recommendations/frontend.md)
 - Data Tableの具体的なセットアップ・API・バージョン移行 — ai-dev-playbook
 - Excel的なセル編集を伴う一覧 — 必要性が確認されたプロジェクトで個別に設計する

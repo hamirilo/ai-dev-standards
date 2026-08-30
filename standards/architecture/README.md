@@ -29,13 +29,13 @@
 
 `timezone.now().date()` は「UTCでの今日」を返します。表示タイムゾーンがUTCより東にある場合、日付が切り替わってからUTCが追いつくまでのあいだ（`Asia/Tokyo` では00:00〜08:59）だけ前日が返り、期限判定、日付の集計、過去日バリデーションが静かに誤動作します。1日のうち一定時間しか再現せず、相対日付で作ったフィクスチャでは顕在化しないため、日付境界に関わる判定は境界時刻を含む複数の時刻で検証します。
 
-この節の誤用パターンの多くは機械的に検出できます。推奨する検査設定は [Recommendations / Quality](../../recommendations/quality.md#日時の取り扱いの検査) を参照してください。
+この節の誤用パターンの多くは機械的に検出できます。推奨する検査設定は [Recommendations / Quality](../../../recommendations/quality.md#日時の取り扱いの検査) を参照してください。
 
 ### 依存関係・ツールチェーン
 
 - Pythonの環境・依存管理は **uv** で統一する。
 - 依存はロックファイル（`uv.lock`、`bun.lock` 等）で固定し、Gitへコミットする。
-- JS側は、同一リポジトリ内でパッケージマネージャやロックファイルを混在させない。新規プロジェクトの既定は [Recommendations / Toolchain](../../recommendations/tooling.md) を参照する。
+- JS側は、同一リポジトリ内でパッケージマネージャやロックファイルを混在させない。新規プロジェクトの既定は [Recommendations / Toolchain](../../../recommendations/tooling.md) を参照する。
 
 ---
 

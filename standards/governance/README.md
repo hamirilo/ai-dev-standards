@@ -116,7 +116,7 @@ CIで自動実行し、エラーがある状態でマージ・リリースしま
 
 - 基本UIの判断はApplication UI Standardで扱い、各プロジェクトで `shadcn/ui` を利用する。
 - Domain Componentは、その業務ドメインを所有する側で管理する。
-- 具体的なサードパーティライブラリの既定は [Recommendations](../../recommendations/) で扱う。Standardではないため逸脱にADRを求めない。
+- 具体的なサードパーティライブラリの既定は [Recommendations](../../../recommendations/) で扱う。Standardではないため逸脱にADRを求めない。
 - 共通実装は、実際の重複が確認された場合にのみ分離を検討する。
 
 同じ用途のライブラリを各プロジェクトで無秩序に増やしません。

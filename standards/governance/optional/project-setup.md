@@ -14,7 +14,7 @@
 | 2 | `decisions/` を用意する | [Governance §1.1](../README.md) |
 | 3 | Pythonの環境・依存管理を uv にする | [Architecture §1](../../architecture/README.md) |
 | 4 | ロックファイルをGitへコミットする | [Architecture §1](../../architecture/README.md) |
-| 5 | JSのパッケージマネージャとロックファイルを同一リポジトリ内で混在させない | [Architecture §1](../../architecture/README.md) / [Recommendations / Toolchain](../../../recommendations/tooling.md) |
+| 5 | JSのパッケージマネージャとロックファイルを同一リポジトリ内で混在させない | [Architecture §1](../../architecture/README.md) / [Recommendations / Toolchain](../../../../recommendations/tooling.md) |
 | 6 | FormatterとLinterを導入する。利用可能ならType Checkerも導入する | [Governance §4.1](../README.md) |
 | 7 | PostgreSQLを使う | [Architecture §1](../../architecture/README.md) |
 | 8 | 社内向けの従業員ログインは OIDC + Django Session とする | [Architecture §1](../../architecture/README.md) |

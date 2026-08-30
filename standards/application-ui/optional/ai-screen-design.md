@@ -20,7 +20,7 @@
 
 ## 実装前提
 
-- `shadcn/ui` と Tailwind CSS を前提とする。アイコンは [Recommendations](../../../recommendations/frontend.md) の既定に従う。
+- `shadcn/ui` と Tailwind CSS を前提とする。アイコンは [Recommendations](../../../../recommendations/frontend.md) の既定に従う。
 - Core StandardのSemantic TokenとLayoutに沿って実装できる構成にする。
 - `shadcn/ui` で表現できるものを不用意に独自Component化しない。
 - Django + React Islandsで実装困難な構成を避ける。
