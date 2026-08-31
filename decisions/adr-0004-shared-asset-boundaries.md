@@ -1,52 +1,47 @@
 # ADR-0004: 共有開発資産を用途・ライフサイクルで分離する
 
-**ステータス**: 採用
+**ステータス**: Superseded by [ADR-0006](adr-0006-platform-composition-boundary.md)
 
 ## コンテキスト
 
-AI開発では、同じ判断・調査・実装・UI検討を繰り返さないことがコスト削減につながる。一方で、Standard、詳細手順、UI実装、導入手順を一つの巨大な知識ベースへ集約すると、AIが読む量と保守範囲が増え、責務が曖昧になる。
+AI開発では、同じ判断・調査・実装・UI検討を繰り返さないことがコスト削減につながる。一方で、Standard、詳細手順、UI実装、テンプレートを一つのAI開発プラットフォームへ集約すると、AIが読む量と保守範囲が増え、以前の構成と同じ肥大化を招く。
 
-その後、分離された資産を利用者が毎回個別に探索する負担も確認されたため、資産そのものを統合するのではなく、**利用時の入口とバージョン組合せだけを `ai-dev-platform` に集約する**構成を採用する。
+また、UIには単なる色違いではなく、Select、Combobox、Filter Selectionのような利用目的そのものが異なるパターンがある。これらを一つのCore Standardへ詰め込まず、必要なときに参照できる設計・実装資産として管理する必要がある。
 
 ## 決定
 
-1. `ai-dev-standards` は **何を守るか** を扱う。判断原則と、揃っていること自体に価値があるCore / Optional Standardだけを管理する。
-2. Recommendationは **普段は何を選ぶか** を扱い、`ai-dev-platform/recommendations` を正本とする。StandardsにはRecommendation本文を重複して持たない。
-3. `ai-dev-playbook` は **どう実装・移行・検証・復旧するか** を扱う。具体例、コマンド、チェックリスト、トラブルシューティングはStandardへ重複して持たない。
-4. `ui-platform` はUIのComponent、Pattern、Template、Catalog / Storybook等の設計・実装資産を扱う。ApplicationがUI packageを利用する場合、実際の依存versionはApplication側の `package.json` / lockfileを正とする。
-5. `ai-dev-platform` は資産を吸収するモノレポではなく、**統合入口（composition root）** とする。Standards / Playbookをsubmoduleとして組み合わせ、RecommendationsとAI向けルーター、導入ガイドを持つ。
-6. 各Applicationは `ai-dev-standards` や `ai-dev-playbook` を直接submoduleとして組み込まない。ワークスペース上の `ai-dev-platform/ai/ONBOARDING.md` を入口として参照する。
-7. 対象ユーザー、認証の要否、主対象デバイス、認可粒度等のプロジェクト固有前提は、各ApplicationのProject Context / ADRで管理する。
-8. 社員検索、組織ツリー、認証基盤連携等の業務ドメイン固有資産は、そのドメインを所有するプロジェクトで管理する。
+1. ai-dev-standardsは、AIが通常タスクで読む少数の判断原則を管理する。Core Standardの領域はGovernance、Architecture、Application UIの3つとする。
+2. Recommendationは現時点の選択を短く記録する。詳細な実装手順、コード例、検証方法、失敗例はRecommendationへ置かない。
+3. 詳細な実装知識とStarterは、ai-dev-playbookとしてStandardとは別に管理する。Playbookは必要なタスクでのみ参照する。
+4. 汎用UIの設計参照、UI実装、Storybookはapplication-ui-kitとしてStandardとは別に管理する。Claude Designへ渡す設計参照は、UI Kit内のdesign-system/ディレクトリに自己完結させる。
+5. 社員検索、組織ツリー、Authentik連携などの業務ドメインUIは、各アプリまたはドメイン所有側で管理する。
+6. ai-dev-foundationのような全資産を集約する単一モノレポは作らない。各リポジトリは同じ公開方針にできるが、利用方法・更新頻度・配布方法の違いを優先して分離する。
+7. application-ui-kitの内部で複数の配布単位が必要になった場合は、そのリポジトリだけをモノレポ化する。StandardやPlaybookと同じリポジトリへ戻さない。
+8. 各アプリには共有資産をサブモジュールとして持たせない。StandardとPlaybookは参照、UI Kitはパッケージ依存を基本とする。
 
 ## 境界
 
-| 資産 | 答える問い | 正本 | 利用方法 |
-|---|---|---|---|
-| Standard | 何を守るか | `ai-dev-standards` | Platformから必要なCore / Optionalを参照 |
-| Recommendation | 普段は何を選ぶか | `ai-dev-platform/recommendations` | 新規採用・依存変更時に参照 |
-| Playbook | どう実施するか | `ai-dev-playbook` | タスク単位で必要な手順だけ参照 |
-| UI Platform | UIをどう設計し、何を再利用するか | `ui-platform` | UIタスク時に参照。package利用時はApplicationのlockfileを正とする |
-| Adoption / Routing | どう導入し、どこを読むか | `ai-dev-platform` | Platform README / `ai/ONBOARDING.md` / Adoption Guide |
-| Project Context / ADR | このプロジェクト固有ではどうするか | 各Application | 実装前に必要な前提だけ参照 |
-
-## StandardとPlaybookの分離例
-
-同じテーマがStandardとPlaybookの両方に存在すること自体は問題ではない。ただし、同じ内容をコピーしない。
-
-例えばDocker Composeでは、Standardは「外部から必要なサービスだけをhostへpublishする」という公開境界を決める。`ports:` の棚卸し、YAML例、接続先変更、検証コマンド、移行手順はPlaybookが扱う。
-
-このように **Standardは判断、Playbookは実施** に分ける。
+| 資産 | 正本 | 利用方法 |
+|---|---|---|
+| 判断原則 | ai-dev-standards | AIが必要なCore/Optionalを参照 |
+| 現時点の選択 | ai-dev-standardsのRecommendation | 新規採用時に参照 |
+| 詳細手順・検証・失敗例 | ai-dev-playbook | タスク単位で参照 |
+| UI設計参照 | application-ui-kit/design-system/ | Claude Designや人間が参照 |
+| UI実装 | application-ui-kit | パッケージとして利用 |
+| 業務ドメインUI | 各アプリ・ドメイン所有側 | そのアプリの要件に合わせて実装 |
 
 ## 結果
 
-- Applicationから見たAI向け入口をPlatformの1箇所にできる。
-- Standardを短く保ちながら、詳細な実装知識をPlaybookへ蓄積できる。
-- Recommendationの二重管理を防げる。
-- 導入・移行手順がGovernance Standardへ混ざらない。
-- UI資産、実装手順、判断原則をそれぞれ異なる更新頻度・利用方法で管理できる。
-- Platform自体はルーティングと組合せに限定され、巨大なモノレポ化を避けられる。
+- Standardを常時読む量を小さく保てる。
+- 詳細知識を蓄積しながら、Standardの責務を広げずに済む。
+- UIの大きなパターン差を、Core Standardのバリエーションとして増やさずに管理できる。
+- UI実装は独立してバージョン管理・配布できる。
+- 将来の分割判断を、ディレクトリ名ではなく利用者・更新単位・配布方法で行える。
 
 ## 例外・見直し
 
-別レイヤーの内容を同じリポジトリへ統合する場合は、同じリリースで更新する必要性があり、分離による負担が実際に上回ることをADRで説明する。単にリンクしやすい、同じ公開範囲である、AIが一度に読めるという理由だけでは統合しない。
+同じリポジトリへ統合する場合は、同じリリースで更新する必要があり、かつ別管理による負担が実際に上回ることをADRで説明する。単に同じ公開範囲であることや、リンクしやすいことだけを理由に統合しない。
+
+## Superseded
+
+資産そのものを分離する原則は維持する一方、その後 `ai-dev-platform` を **資産を吸収しない統合入口（composition root）** として採用し、Recommendationsの正本やUI資産の名称・責務も変更した。現在の決定は [ADR-0006](adr-0006-platform-composition-boundary.md) を参照する。
