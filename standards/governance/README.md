@@ -3,6 +3,8 @@
 本ドキュメントは、「人およびAIエージェントはどう行動するか」という開発時の行動規範・ルールを定義する **Core Governance Standard** です。
 「システムをどう作るか」は [Architecture Standard](../architecture/)、「画面をどう揃えるか」は [Application UI Standard](../application-ui/) を参照してください。
 
+Platformの初回導入、既存リポジトリへの適用、AI設定ファイルからの参照方法はGovernance Standardでは扱いません。これらは [ai-dev-platform](https://github.com/hamirilo/ai-dev-platform) のAdoption Guideを正とします。
+
 ---
 
 ## 1. Standardの扱いと逸脱
@@ -23,12 +25,6 @@
 
 何を記録するかは上記の逸脱ルールに従う。ADRの数を増やすこと自体を目的にしない。
 
-### 1.2. プロジェクトからのStandard参照
-
-- 各プロジェクトの `CLAUDE.md` 等のAI設定ファイルから、`ai/ONBOARDING.md` を参照させる。これが無いプロジェクトでは、Standardが一切読まれない。
-- 参照の方法は [README「利用方法」](../../README.md#利用方法プロジェクトからの参照) に従う。
-- `CLAUDE.md` のその他の内容（プロジェクト概要、起動方法、ドメイン用語など）はプロジェクト固有とし、Standardで様式を固定しない。
-
 ---
 
 ## 2. AI利用方針
@@ -46,7 +42,7 @@
 ### 2.2. コンテキストと探索
 
 - タスクと無関係なリポジトリ全体を無差別に探索しない。
-- `ai/ONBOARDING.md` をルーターとして、必要なCore Standardだけを読む。
+- Platformの `ai/ONBOARDING.md` をルーターとして、必要なCore Standardだけを読む。
 - Optional Standardは該当機能を扱う場合のみ読む。
 - Standardで既に判断済みの内容を、毎回ゼロから比較・調査しない。
 - 既存実装がある場合は、同じ用途を再実装しない。
@@ -96,8 +92,6 @@ AIは、ユーザーからcommit / pushの権限が与えられていない状�
 
 具体的なツール、ルールセット、コマンド名は各プロジェクトで管理します。Standardでは特定の製品や設定値を固定しません。
 
----
-
 ### 4.3. 必須の機械的検証
 
 対象プロジェクトで定義されている機械的な検証は、該当する場合にPR・マージ・リリースの必須ゲートとします。
@@ -109,6 +103,8 @@ AIは、ユーザーからcommit / pushの権限が与えられていない状�
 
 CIで自動実行し、エラーがある状態でマージ・リリースしません。具体的なツール、コマンド、テスト範囲は各プロジェクトで管理します。プロジェクトに該当する検証が存在しない場合、形式的に新しいツールを追加することまでは求めません。
 
+---
+
 ## 5. 技術・資産の追加判断
 
 新しい技術や共通資産を追加するときは、まず既存のStandard / Recommendation / 実装で解決できないか確認します。
@@ -116,15 +112,7 @@ CIで自動実行し、エラーがある状態でマージ・リリースしま
 
 - 基本UIの判断はApplication UI Standardで扱い、各プロジェクトで `shadcn/ui` を利用する。
 - Domain Componentは、その業務ドメインを所有する側で管理する。
-- 具体的なサードパーティライブラリの既定は [Recommendations](../../../recommendations/) で扱う。Standardではないため逸脱にADRを求めない。
+- 具体的なサードパーティライブラリの既定は [ai-dev-platform / Recommendations](https://github.com/hamirilo/ai-dev-platform/tree/main/recommendations) で扱う。Standardではないため逸脱にADRを求めない。
 - 共通実装は、実際の重複が確認された場合にのみ分離を検討する。
 
 同じ用途のライブラリを各プロジェクトで無秩序に増やしません。
-
----
-
-## Optional Standards
-
-該当する作業を行う場合のみ参照する。
-
-- [Project Setup](optional/project-setup.md) — 新しいリポジトリを立ち上げる場合、または既存リポジトリをStandardへ適合させる場合
