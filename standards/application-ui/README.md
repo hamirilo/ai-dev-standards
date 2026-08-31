@@ -30,7 +30,7 @@ UIの具体的なFoundations、Components、Patterns、Templates、Storybook Cat
 - Themeの具体値はStandardで固定せず、UI Platformまたは利用側Applicationのtheme設定で管理する。
 - 既存Tokenで表現できる場合は新しいTokenを増やさない。
 
-Themeを定義・変更する場合の共通制約は [Theme Customization](optional/theme-customization.md) を参照してください。
+具体的なToken値、Theme実装、Componentへの適用方法はUI Platformを参照してください。
 
 ---
 
@@ -142,6 +142,4 @@ Component仕様、Props一覧、実装code、Storybook内容をStandardへ複製
 
 該当する作業を行う場合のみ参照します。
 
-- [Theme Customization](optional/theme-customization.md) — Themeの具体値やToken追加を扱う場合
 - [一覧画面](optional/list-screens.md) — 並び替え、絞り込み、pagination、行選択等の対話的な一覧／検索画面を実装する場合
-- [AI Screen Design](optional/ai-screen-design.md) — Claude Design等へ画面designを依頼する場合
