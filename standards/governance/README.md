@@ -25,7 +25,7 @@
 
 ### 1.2. プロジェクトからのStandard参照
 
-- 各プロジェクトの `CLAUDE.md` 等のAI設定ファイルから、`ai/ONBOARDING.md` を参照させる。これが無いプロジェクトでは、Standardが一切読まれない。
+- 各プロジェクトの `CLAUDE.md` 等のAI設定ファイルから、`ai-dev-platform/ai/ONBOARDING.md` を参照させる。これが無いプロジェクトでは、Standardが一切読まれない。
 - 参照の方法は [README「利用方法」](../../README.md#利用方法プロジェクトからの参照) に従う。
 - `CLAUDE.md` のその他の内容（プロジェクト概要、起動方法、ドメイン用語など）はプロジェクト固有とし、Standardで様式を固定しない。
 
@@ -46,7 +46,7 @@
 ### 2.2. コンテキストと探索
 
 - タスクと無関係なリポジトリ全体を無差別に探索しない。
-- `ai/ONBOARDING.md` をルーターとして、必要なCore Standardだけを読む。
+- `ai-dev-platform/ai/ONBOARDING.md` をルーターとして、必要なCore Standardだけを読む。
 - Optional Standardは該当機能を扱う場合のみ読む。
 - Standardで既に判断済みの内容を、毎回ゼロから比較・調査しない。
 - 既存実装がある場合は、同じ用途を再実装しない。

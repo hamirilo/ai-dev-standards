@@ -10,7 +10,7 @@
 
 | | 項目 | 規定元 |
 |---|---|---|
-| 1 | `CLAUDE.md` 等のAI設定ファイルから `ai/ONBOARDING.md` を参照させる | [Governance §1.2](../README.md) |
+| 1 | `CLAUDE.md` 等のAI設定ファイルから `ai-dev-platform/ai/ONBOARDING.md` を参照させる | [Governance §1.2](../README.md) |
 | 2 | `decisions/` を用意する | [Governance §1.1](../README.md) |
 | 3 | Pythonの環境・依存管理を uv にする | [Architecture §1](../../architecture/README.md) |
 | 4 | ロックファイルをGitへコミットする | [Architecture §1](../../architecture/README.md) |
@@ -60,7 +60,7 @@ Aの答えによって、BとEが不要になることがあります。該当�
 
 これは連番ADRではなく、AIエージェントが実装前に読む**現在のプロジェクト前提**です。既存リポジトリですでに `adr-0001` が使われていても番号衝突を起こしません。前提を変更した場合はこのファイルを更新し、変更理由を将来説明する価値があるときだけ、[Governance §1.1](../README.md) に従って別の連番ADRを残します。
 
-ファイル名を固定するのは、AIエージェントが実装前にこれを読むためです（[ONBOARDING 必守事項7](../../../ai/ONBOARDING.md)）。場所や名前がプロジェクトごとに違うと、決めた前提が読まれません。
+ファイル名を固定するのは、AIエージェントが実装前にこれを読むためです（[ONBOARDING 必守事項7](../../../../ai/ONBOARDING.md)）。場所や名前がプロジェクトごとに違うと、決めた前提が読まれません。
 
 ---
 

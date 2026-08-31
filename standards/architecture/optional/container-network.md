@@ -61,4 +61,4 @@ DjangoからPostgreSQLへは `db:5432`、Redisへは `redis://redis:6379/0` の�
 
 Composeのポート公開を変更する場合は、既存のホストOS上のツール、開発スクリプト、LANアクセスを壊さないことを確認します。最終的な公開状態は `docker compose config` 等で確認し、意図しないホストポート公開がないことを検証します。
 
-既存Composeの棚卸し、設定調査、移行手順、検証方法は [Docker Compose ポート公開 Playbook](https://github.com/hamirilo/ai-dev-playbook/blob/main/playbooks/docker-compose-port-exposure.md) を参照してください。
+既存Composeの棚卸し、設定調査、移行手順、検証方法は [Docker Compose ポート公開 Playbook](https://github.com/jazmf-dx/ai-dev-playbook/blob/main/playbooks/docker-compose-port-exposure.md) を参照してください。

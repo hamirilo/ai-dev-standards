@@ -12,11 +12,10 @@ Standardの価値は項目数や網羅性ではなく、**実際に繰り返さ�
 
 | ディレクトリ | 役割 | 内容 |
 |---|---|---|
-| `ai/` | **AI エージェント向けルーター** | `ONBOARDING.md` (AIが最初に読むファイル。必守事項と各Standardへのリンク) |
+| `ai/` | （移動済み） | ルーターは `ai-dev-platform/ai/ONBOARDING.md` にある。ここには誘導だけを残している |
 | `standards/governance/` | **人・AIはどう行動するか** | AI利用方針、Git運用、Standard逸脱時のルール |
 | `standards/architecture/` | **システムをどう作るか** | Django/PostgreSQL/React Islands等の技術選定、ファイル構成、権限管理 |
 | `standards/application-ui/` | **画面構造・操作の一貫性** | UIの基本原則、Layouts定義（画面レイアウトのパターン）、コンポーネント利用方針 |
-| `recommendations/` | **現時点で何を使うか・何を確認するか（Standardではない）** | サードパーティライブラリの既定、品質向上の推奨チェック、非推奨ライブラリ、ツールチェーン |
 | `decisions/` | **ADR (アーキテクチャ決定記録)** | なぜ現在のStandardやArchitectureになったのかを説明する重要な過去の技術決定の背景 |
 
 ## Core と Optional
@@ -33,14 +32,14 @@ Standardの価値は項目数や網羅性ではなく、**実際に繰り返さ�
 
 ## 利用方法（プロジェクトからの参照）
 
-本リポジトリはsubmodule等では配布しません。開発マシン上に本リポジトリをcheckoutし、各プロジェクトの `CLAUDE.md` 等のAI設定ファイルから `ai/ONBOARDING.md` へのパスを記載して参照させます。
+**各アプリへは submodule として配布しません**（[ADR-0004](decisions/adr-0004-shared-asset-boundaries.md) 項目8）。一方、統合入口である `ai-dev-platform` からは `standards/` submodule として参照されます。プロジェクトが読むのは常に `ai-dev-platform` 側の入口です。
 
 ```markdown
 <!-- 各プロジェクトの CLAUDE.md への記載例 -->
-開発Standardは ../ai-dev-standards/ai/ONBOARDING.md を最初に読むこと。
+開発Standardは ../ai-dev-platform/ai/ONBOARDING.md を最初に読むこと。
 ```
 
-開発中は最新のmainを参照してよいものとします。ただし、同じ判断を再現したい作業やドキュメント生成では、release tagまたはcommitを指定します。各アプリへsubmoduleや実行時依存として組み込む必要はありません。
+開発中は最新のmainを参照してよいものとします。ただし、同じ判断を再現したい作業やドキュメント生成では、`ai-dev-platform` 側で release tag または commit を pin します。各アプリへsubmoduleや実行時依存として組み込む必要はありません。
 
 ### 既存プロジェクトへの適用
 
@@ -64,17 +63,17 @@ Standardへ置かない判断や実装資産の主な配置先です。
 |---|---|---|
 | **Project Context / ADR** | 対象ユーザー、利用環境、認証・認可、プロジェクト固有の重要判断 | 各プロジェクトで管理 |
 | **Domain Components** | EmployeePicker等、業務ドメイン固有の再利用UI | 所有するドメイン／プロジェクトで管理 |
-| **Recommendation** | サードパーティライブラリの既定、品質向上の推奨チェック | [recommendations/](recommendations/) |
+| **Recommendation** | サードパーティライブラリの既定、品質向上の推奨チェック | ai-dev-platform の `recommendations/`（本リポジトリから移動済み） |
 | **Playbook / Starter** | 詳細な実装手順、検証方法、失敗例、新規プロジェクトの開始点 | ai-dev-playbook（Standardとは別リポジトリ。必要時のみ参照） |
-| **Application UI Kit** | 汎用UIの設計参照、実装コード、Storybook | application-ui-kit（Standardとは別リポジトリ／パッケージ） |
+| **Application UI Kit** | 汎用UIの設計参照、実装コード、Pattern、Template、Storybook | ui-platform（Standardとは別リポジトリ。パッケージ名は `application-ui-kit` のまま） |
 
 ### Recommendation・Playbook・UI Kitの境界
 
 | 層 | 答える質問 | 置き場所 |
 |---|---|---|
-| Recommendation | 現時点で何を選ぶか | ai-dev-standards |
+| Recommendation | 現時点で何を選ぶか | ai-dev-platform |
 | Playbook | どう実施するか | ai-dev-playbook |
-| UI Kit | どのデザイン・実装を再利用するか | application-ui-kit |
+| UI Kit | どのデザイン・実装を再利用するか | ui-platform |
 
 Recommendationは短い現在の既定、Playbookは詳細な手順・検証・失敗例です。UI KitはClaude Design向けの設計参照と、再利用可能なUI実装を管理します。これらをStandardへ取り込んで常時読ませません。
 
@@ -82,7 +81,7 @@ Recommendationは短い現在の既定、Playbookは詳細な手順・検証・�
 
 ## 基本原則
 
-1. **AIファースト・ルーター**: すべてのドキュメントを最初からAIに読ませるのではなく、`ai/ONBOARDING.md` を起点として、タスクに必要なStandardだけを読ませるようにします。
+1. **AIファースト・ルーター**: すべてのドキュメントを最初からAIに読ませるのではなく、`ai-dev-platform/ai/ONBOARDING.md` を起点として、タスクに必要なStandardだけを読ませるようにします。
 2. **Standardからの逸脱は許容する**: Standardは強いデフォルトですが、絶対的な制約ではありません。あえて異なる技術選定をするなど、重要な逸脱を行った場合は、プロジェクト側のADRとして「なぜ外れたのか」を記録します。
 3. **実装との分離**: 本リポジトリにはUIコンポーネント（EmployeePicker等）やプロジェクト雛形の「実コード」は置きません。基本UIは shadcn/ui を基礎とする採用済みの Application UI Kit または各プロジェクトで管理し、業務ドメイン固有の共有UIはそのドメインを所有する側で管理します。Playbook、Starter、UI実装は、それぞれの外部資産リポジトリで管理します。
 4. **繰り返しがないものを先回りして標準化しない**: 「将来必要になるかもしれない」だけでStandard、Template、Shared実装を増やしません。
@@ -95,6 +94,32 @@ Recommendationは短い現在の既定、Playbookは詳細な手順・検証・�
 共有資産をStandardへ取り込まない境界と、Standard・Playbook・UI Kitの分離理由は [ADR-0004](decisions/adr-0004-shared-asset-boundaries.md) を参照してください。
 
 共有資産のリポジトリをフォークして採用する場合の運用（フォークにソース差分を持たない、配布物の識別子は公開時に所有者から導出する、組織固有のものは所有プロジェクトへ置く）は [ADR-0005](decisions/adr-0005-upstream-fork-operation.md) を参照してください。
+
+## フォーク差分（ADR-0005 項目5 の記録）
+
+本リポジトリは上流のフォークです。[ADR-0005](decisions/adr-0005-upstream-fork-operation.md)
+項目1 は「フォークにソース差分を持たない」と定めていますが、次の 2 点は
+**上流では意味を持たない構成差分**なので、やむを得ずフォーク側に持っています。
+項目5 に従い、差分と再適用手順をここに記録します。
+
+| 差分 | 内容 | 上流へ出さない理由 |
+|---|---|---|
+| Recommendations の移設 | `recommendations/` を本リポジトリから削除し、`ai-dev-platform/recommendations/` を正とした。`standards/**` からの内部リンクは `../../../recommendations/` のように 1 階層多く辿る | `ai-dev-platform` という統合入口の存在が前提。上流にこの階層は無い |
+| ルーターの移設 | `ai/ONBOARDING.md` を `ai-dev-platform/ai/ONBOARDING.md` へ移し、ここには誘導スタブだけを残した | 同上。入口が 2 つあるとエージェントへの指示が分岐する |
+
+**上流を取り込み直したときの再適用手順:**
+
+1. 上流が `recommendations/` を更新していたら、その差分を `ai-dev-platform/recommendations/`
+   へ反映する（本リポジトリ側には戻さない）
+2. 上流が `ai/ONBOARDING.md` を更新していたら、その差分を
+   `ai-dev-platform/ai/ONBOARDING.md` へ反映する。スタブは上書きしない
+3. `standards/**` に `../../recommendations/` のような**上流の階層のままの相対リンク**が
+   入っていないか確認する。入っていたら `../` を 1 つ足す
+4. `standards/**` から `ai/ONBOARDING.md` を参照している箇所は
+   `ai-dev-platform` 側（`../../../../ai/ONBOARDING.md`）を指しているか確認する
+
+汎用的な改善（Standard の内容そのもの）は、ADR-0005 項目3 に従って上流へ PR を出します。
+上記の構成差分だけをフォークに留めます。
 
 ## 意図的に扱わないもの
 

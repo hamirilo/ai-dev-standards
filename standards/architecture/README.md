@@ -212,7 +212,7 @@ UI上のエラー表現は [Application UI Standard](../application-ui/) に従�
 - **ビルド失敗や成果物の欠落を隠さない。** 失敗を握り潰して、欠けた成果物を含むイメージを配布しない。
 - **実行環境でのビルドが必要な場合は、制約と解消条件をプロジェクト側のADRに残す。** 恒久的な既定にはしない。
 
-multi-stage構成、ビルド時の設定・秘密情報、プラットフォーム指定、既存環境の移行・検証は、[コンテナ配布 Playbook](https://github.com/hamirilo/ai-dev-playbook/blob/main/playbooks/container-delivery.md)を必要な場合のみ参照します。
+multi-stage構成、ビルド時の設定・秘密情報、プラットフォーム指定、既存環境の移行・検証は、[コンテナ配布 Playbook](https://github.com/jazmf-dx/ai-dev-playbook/blob/main/playbooks/container-delivery.md)を必要な場合のみ参照します。
 
 ---
 
