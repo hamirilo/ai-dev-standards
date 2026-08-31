@@ -1,119 +1,113 @@
 # AI Development Standards
 
-**「複数のリポジトリを一人で継続的に開発するときに、AIと人間の判断・実装・UI/UXのブレを減らす」** ための Opinionated な開発スタンダードです。
+**「複数のリポジトリを継続的に開発するときに、AIと人間の判断・実装・UI/UXのブレを減らす」**ための Opinionated な開発スタンダードです。
 
-本リポジトリは、あらゆる技術スタックに対応する汎用的なガイドラインではなく、**「Djangoを中心としたWebアプリケーションを、AI支援で効率的・一貫して開発するため」** の具体的で強いデフォルト（Opinion）を提供します。
+本リポジトリは、あらゆる技術スタックに対応する汎用ガイドラインではなく、**Djangoを中心としたWebアプリケーションを、AI支援で効率的・一貫して開発するための少数の強いデフォルト**を提供します。
 
-Standardの価値は項目数や網羅性ではなく、**実際に繰り返される重要な判断を少ないルールで再利用できること**にあります。有用なベストプラクティスであることや、将来役立ちそうであることだけを理由にStandardを増やしません。
+Standardの価値は項目数や網羅性ではなく、実際に繰り返される重要な判断を少ないルールで再利用できることにあります。有用なベストプラクティスであることや、将来役立ちそうであることだけを理由にStandardを増やしません。
+
+## 位置づけ
+
+このリポジトリは **「何を守るか」** の正本です。
+
+利用時の統合入口、Recommendations、導入・適用手順は [ai-dev-platform](https://github.com/hamirilo/ai-dev-platform) が扱います。詳細な実装・移行・検証手順は [ai-dev-playbook](https://github.com/hamirilo/ai-dev-playbook)、UI設計・再利用可能なUI実装は [ui-platform](https://github.com/hamirilo/ui-platform) が扱います。
+
+通常のApplicationは本リポジトリを直接submoduleとして組み込みません。`ai-dev-standards` は `ai-dev-platform` のsubmoduleとしてバージョン固定され、ApplicationのAI設定は **Platform側の `ai/ONBOARDING.md` を唯一の入口として参照**します。
+
+```text
+Application
+    |
+    v
+ai-dev-platform/ai/ONBOARDING.md
+    |
+    +-- standards/       [submodule: ai-dev-standards]
+    +-- recommendations/
+    +-- playbook/        [submodule: ai-dev-playbook]
+    +-- ui-platform      [independent repository]
+```
+
+Platform自体の初回導入や既存プロジェクトへの適用方法は、PlatformのREADME / Adoption Guideを参照してください。
 
 ## 構成と役割
 
-このリポジトリは「どう作るべきか（判断の再利用）」を定義するものであり、「実際のUIコンポーネントやテンプレートの実装コード」は含まれません。
-
 | ディレクトリ | 役割 | 内容 |
 |---|---|---|
-| `ai/` | **AI エージェント向けルーター** | `ONBOARDING.md` (AIが最初に読むファイル。必守事項と各Standardへのリンク) |
 | `standards/governance/` | **人・AIはどう行動するか** | AI利用方針、Git運用、Standard逸脱時のルール |
-| `standards/architecture/` | **システムをどう作るか** | Django/PostgreSQL/React Islands等の技術選定、ファイル構成、権限管理 |
-| `standards/application-ui/` | **画面構造・操作の一貫性** | UIの基本原則、Layouts定義（画面レイアウトのパターン）、コンポーネント利用方針 |
-| `recommendations/` | **現時点で何を使うか・何を確認するか（Standardではない）** | サードパーティライブラリの既定、品質向上の推奨チェック、非推奨ライブラリ、ツールチェーン |
-| `decisions/` | **ADR (アーキテクチャ決定記録)** | なぜ現在のStandardやArchitectureになったのかを説明する重要な過去の技術決定の背景 |
+| `standards/architecture/` | **システムをどう作るか** | Django/PostgreSQL/React Islands等の技術構成、認可、Security、Logging、Testing |
+| `standards/application-ui/` | **画面構造・操作をどう揃えるか** | UI原則、Layout、Semantic Token、コンポーネント利用方針 |
+| `decisions/` | **Standard自体のADR** | なぜ現在のStandard構成・境界になったか |
+
+本リポジトリには、Recommendations、導入手順、詳細Playbook、UI実装コード、Application向けAIルーターを重複して持ちません。
 
 ## Core と Optional
 
 各Standard領域の `README.md` は、対象プロジェクトの大半に適用する **Core Standard** です。
-特定機能だけに必要な詳細仕様は、各領域の `optional/` 配下へ分離します。
+特定機能だけに必要な共通契約は、各領域の `optional/` 配下へ分離します。
 
 - Coreは少数で変わりにくい判断だけを持つ
 - Optionalは該当機能を扱う場合のみ参照する
-- Optionalは必要であればURL、レスポンス形式、運用契約等まで具体的に規定できる
-- 特定ライブラリの候補、実装コード、プロジェクト固有の判断をStandardへ混ぜない
+- Optionalは「揃っていること自体に価値がある仕様」に限定する
+- 実装手順・移行手順・検証手順はPlaybookへ置く
+- 現時点のライブラリ選定はRecommendationへ置く
+- プロジェクト固有の判断はProject Context / ADRへ置く
 
 この分離の理由と追加基準は [ADR-0003](decisions/adr-0003-core-and-optional-standards.md) を参照してください。
 
-## 利用方法（プロジェクトからの参照）
-
-本リポジトリはsubmodule等では配布しません。開発マシン上に本リポジトリをcheckoutし、各プロジェクトの `CLAUDE.md` 等のAI設定ファイルから `ai/ONBOARDING.md` へのパスを記載して参照させます。
-
-```markdown
-<!-- 各プロジェクトの CLAUDE.md への記載例 -->
-開発Standardは ../ai-dev-standards/ai/ONBOARDING.md を最初に読むこと。
-```
-
-開発中は最新のmainを参照してよいものとします。ただし、同じ判断を再現したい作業やドキュメント生成では、release tagまたはcommitを指定します。各アプリへsubmoduleや実行時依存として組み込む必要はありません。
-
-### 既存プロジェクトへの適用
+## 既存プロジェクトへの適用方針
 
 Standardは原則として、**これから行う判断・新規実装・変更箇所のデフォルト**を定めます。
 
-既存実装が現在のStandardと異なることだけを理由に、一括移行、全面的なリファクタリング、依存ライブラリの置換、インフラ更新を要求しません。既存部分は必要な変更を行うときにStandardへ寄せることを基本とします。
+既存実装が現在のStandardと異なることだけを理由に、一括移行、全面的なリファクタリング、依存ライブラリの置換、インフラ更新を要求しません。
 
-Standardを使ったレビューで見つかった事項は、次のように扱います。
+Standardレビューで見つかった事項は次のように扱います。
 
-- セキュリティ、データ整合性、必須CIゲート等に関わる重大な問題 → 必要な修正として扱う
-- 現在のStandardと異なる既存方式 → 原則として今後の新規・変更箇所から寄せる
-- 品質向上、近代化、追加機能等 → Standard適合作業から分離し、通常の改善候補として扱う
+- **Required**: 今回の新規・変更箇所でStandardに反するもの、またはセキュリティ、データ整合性、必須CIゲート等に関わる現在の問題
+- **Adopt going forward**: 変更対象外の既存方式が現在のStandardと異なるもの。直ちに一括移行せず、今後その箇所を変更するときに寄せる
+- **Optional improvement**: 品質向上、近代化、追加機能等。Standard適合とは分離する
 
-Standardレビューを、リポジトリ全体の改善監査や近代化ロードマップ作成へ自動的に拡張しません。
+具体的な導入・棚卸しの進め方はPlatform側のAdoption Guideで扱います。
 
 ## Standard以外の配置先
 
-Standardへ置かない判断や実装資産の主な配置先です。
-
-| レイヤー | 内容 | 現状 |
+| レイヤー | 答える質問 | 正本 |
 |---|---|---|
-| **Project Context / ADR** | 対象ユーザー、利用環境、認証・認可、プロジェクト固有の重要判断 | 各プロジェクトで管理 |
-| **Domain Components** | EmployeePicker等、業務ドメイン固有の再利用UI | 所有するドメイン／プロジェクトで管理 |
-| **Recommendation** | サードパーティライブラリの既定、品質向上の推奨チェック | [recommendations/](recommendations/) |
-| **Playbook / Starter** | 詳細な実装手順、検証方法、失敗例、新規プロジェクトの開始点 | ai-dev-playbook（Standardとは別リポジトリ。必要時のみ参照） |
-| **Application UI Kit** | 汎用UIの設計参照、実装コード、Storybook | application-ui-kit（Standardとは別リポジトリ／パッケージ） |
+| **Standard** | 何を守るか | `ai-dev-standards` |
+| **Recommendation** | 普段は何を選ぶか | `ai-dev-platform/recommendations` |
+| **Playbook** | どう実装・移行・検証するか | `ai-dev-playbook` |
+| **UI Platform** | UIをどう設計し、何を再利用するか | `ui-platform` |
+| **Project Context / ADR** | このプロジェクト固有ではどうするか | 各Application |
 
-### Recommendation・Playbook・UI Kitの境界
-
-| 層 | 答える質問 | 置き場所 |
-|---|---|---|
-| Recommendation | 現時点で何を選ぶか | ai-dev-standards |
-| Playbook | どう実施するか | ai-dev-playbook |
-| UI Kit | どのデザイン・実装を再利用するか | application-ui-kit |
-
-Recommendationは短い現在の既定、Playbookは詳細な手順・検証・失敗例です。UI KitはClaude Design向けの設計参照と、再利用可能なUI実装を管理します。これらをStandardへ取り込んで常時読ませません。
-
-未整備のレイヤーが受け皿になる判断は、整備されるまで各プロジェクト側で行い、重要な選定はプロジェクト側のADR等に記録します。AIは存在しないレイヤーを探索しません。
+同じ判断や手順を複数の層へコピーしません。Standardには判断原則だけを残し、具体例・コマンド・移行チェックリスト・トラブルシューティングが必要になった場合はPlaybookを参照します。
 
 ## 基本原則
 
-1. **AIファースト・ルーター**: すべてのドキュメントを最初からAIに読ませるのではなく、`ai/ONBOARDING.md` を起点として、タスクに必要なStandardだけを読ませるようにします。
-2. **Standardからの逸脱は許容する**: Standardは強いデフォルトですが、絶対的な制約ではありません。あえて異なる技術選定をするなど、重要な逸脱を行った場合は、プロジェクト側のADRとして「なぜ外れたのか」を記録します。
-3. **実装との分離**: 本リポジトリにはUIコンポーネント（EmployeePicker等）やプロジェクト雛形の「実コード」は置きません。基本UIは shadcn/ui を基礎とする採用済みの Application UI Kit または各プロジェクトで管理し、業務ドメイン固有の共有UIはそのドメインを所有する側で管理します。Playbook、Starter、UI実装は、それぞれの外部資産リポジトリで管理します。
-4. **繰り返しがないものを先回りして標準化しない**: 「将来必要になるかもしれない」だけでStandard、Template、Shared実装を増やしません。
-5. **追加より既存ルールへの統合を優先する**: 新しい知識が有用でも、既存Standardで判断できるなら新しいルールを追加しません。不要になったルールは残し続けず、削除・統合を検討します。
+1. **Standardは判断の再利用に限定する**: 実装手順集や知識ベースへ拡張しない。
+2. **Standardからの逸脱は許容する**: 重要な逸脱だけをプロジェクト側ADR等に記録する。
+3. **繰り返しがないものを先回りして標準化しない**: 将来必要になるかもしれないという理由でStandardを増やさない。
+4. **追加より既存ルールへの統合を優先する**: 既存Standardで判断できるなら新しいルールを作らない。
+5. **HowをStandardへ持ち込まない**: 実装・移行・検証・障害対応はPlaybookへ分離する。
 
-## Standardへ追加する前に
-
-追加基準と配置先の判断は [ADR-0003](decisions/adr-0003-core-and-optional-standards.md) を正とします。要点は「複数プロジェクトで繰り返しが確認された判断だけを、Core / Optional / Standard以外の適切な場所へ置く」ことです。**有用であること、一般的なベストプラクティスであること、将来役立ちそうであることだけでは追加理由になりません。** 基準の重複記載による記述ドリフトを避けるため、本READMEには基準の詳細を再掲しません。
-
-共有資産をStandardへ取り込まない境界と、Standard・Playbook・UI Kitの分離理由は [ADR-0004](decisions/adr-0004-shared-asset-boundaries.md) を参照してください。
-
-共有資産のリポジトリをフォークして採用する場合の運用（フォークにソース差分を持たない、配布物の識別子は公開時に所有者から導出する、組織固有のものは所有プロジェクトへ置く）は [ADR-0005](decisions/adr-0005-upstream-fork-operation.md) を参照してください。
+Standardへの追加基準は [ADR-0003](decisions/adr-0003-core-and-optional-standards.md)、共有資産の境界は [ADR-0004](decisions/adr-0004-shared-asset-boundaries.md)、共有資産をフォークして利用する場合の運用は [ADR-0005](decisions/adr-0005-upstream-fork-operation.md) を参照してください。
 
 ## 意図的に扱わないもの
 
-本リポジトリは、Web開発のベストプラクティス全集、包括的なAI向け知識ベース、詳細手順集、プロジェクト全体の品質改善チェックリストを目指しません。
+本リポジトリは、Web開発のベストプラクティス全集、包括的なAI向け知識ベース、詳細手順集、プロジェクト全体の改善チェックリストを目指しません。
 
-次の領域は、現時点で本Standardの対象外です。繰り返しの判断が実際に発生し、統一しないことによる問題が確認された場合にのみ再検討します。
+次のような内容はStandardではなく、必要に応じてPlatform / Playbook / Project側で扱います。
 
-- CI/CD・リリースフローの詳細な実装
-- デプロイ・インフラ構成、バックアップ等の運用手順の詳細
-- ネーミング・コーディングスタイルの詳細規約（各プロジェクトのlint / formatter設定に委ねる）
-- アクセシビリティの詳細仕様（基本操作性の原則のみApplication UI Standardに置き、詳細化は実際の必要性が確認された場合に検討する）
-- i18n / 多言語対応
+- ai-dev-platform自体の導入・更新手順
+- 既存リポジトリの移行チェックリスト
+- CI/CD・デプロイ・インフラの詳細手順
+- Docker Compose設定の棚卸し・変更手順・検証コマンド
+- ライブラリの候補比較や現時点の推奨
+- プロジェクト固有の機能要件・運用手順
+- UI Component / Pattern / Template / Storybook
+- AIエージェント定義、モデル設定、複雑なワークフロー実行基盤
 
 ## メンテナンスツール
 
-本リポジトリ自体のメンテナンス用に最小限のツールを用意しています。
-プラットフォーム化を防ぐため、独自の大規模な検証スクリプト等は構築しません。
+本リポジトリ自体のメンテナンス用に最小限のツールを用意しています。独自の大規模な検証基盤は構築しません。
 
 ```bash
-# ドキュメントのリンク切れなどをチェック (要: just, lychee)
 just check-docs
 ```
