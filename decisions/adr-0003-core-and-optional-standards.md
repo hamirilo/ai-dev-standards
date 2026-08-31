@@ -4,129 +4,111 @@
 
 ## コンテキスト
 
-Standardを増やしていくと、個々のルールは有用でも、すべてを全プロジェクト共通として積み上げることで次の問題が起きる。
+Standardを増やしていくと、個々のルールは有用でも、すべてを全project共通として積み上げることで次の問題が起きます。
 
-- 小さなプロジェクトまで不要なルールに従う必要が生じる。
-- AIが読むべきドキュメント量が増える。
-- 特定機能だけに必要な詳細仕様がCoreに混ざる。
-- 「Standardに書くこと」が目的化し、リポジトリが肥大化する。
+- 小さなprojectまで不要なruleへ従う必要が生じる。
+- AIが読むdocument量が増える。
+- 特定機能だけに必要な契約がCoreへ混ざる。
+- 「Standardに書くこと」が目的化し、repositoryが肥大化する。
 
-一方、Status APIのレスポンス契約のように、特定機能を使う場合には細部まで統一した方が運用・連携コストを下げられる仕様もある。
+一方、Status APIのresponse契約等、特定機能を利用する場合には細部まで統一した方が連携・運用costを下げられる仕様もあります。
 
 ## 決定
 
-Standardsを **Core Standard** と **Optional Standard** に分離する。
+Standardsを **Core Standard** と **Optional Standard** に分離します。
 
-Standardへの追加は保守的に判断する。新しい知識やベストプラクティスを見つけた場合も、まず「追加しない」「既存ルールへ統合する」「Standard外へ置く」を検討し、Standardとして共有する必要性が確認できた場合だけ追加する。
+Standardへの追加は保守的に判断します。新しい知識やbest practiceを見つけても、まず「追加しない」「既存ruleへ統合する」「Standard外へ置く」を検討し、Standardとして共有する必要性が確認できた場合だけ追加します。
 
 ### Core Standard
 
-対象プロジェクトの大半に適用する、少数で変わりにくい判断だけを置く。
+対象projectの大半に適用する、少数で変わりにくい判断だけを置きます。
 
-Coreへ追加する前に次を確認する。
+Coreへ追加する前に次を確認します。
 
-1. 複数プロジェクトで同じ判断が繰り返されているか。
+1. 複数projectで同じ判断が繰り返されているか。
 2. AIへ同じ説明を繰り返しているか。
 3. 統一しないことで実際の保守・運用・UX上の問題が起きるか。
-4. 対象プロジェクトの大半で適用でき、長期間変わりにくいか。
+4. 対象projectの大半で適用でき、長期間変わりにくいか。
 
-「将来必要になるかもしれない」「一般的なベストプラクティスである」「品質向上に役立つ」という理由だけではCoreへ追加しない。
+「将来必要になるかもしれない」「一般的なbest practiceである」「品質向上に役立つ」という理由だけではCoreへ追加しません。
 
 ### Optional Standard
 
-特定機能・作業を扱う場合だけ参照・適用する仕様を置く。
-OptionalはCoreより詳細に定義してよい。
+特定機能を扱う場合だけ参照・適用する **共通契約・制約** を置きます。
 
-対象とするのは、同じ機能や作業について複数プロジェクトで同じ判断が繰り返され、統一によって実装・運用・連携コストを下げられるものとする。
+対象とするのは、同じ機能について複数projectで同じ判断が繰り返され、統一されていること自体が連携・security・運用・UX上の価値になるものです。
 
-AIはOptional Standardを先回りしてすべて読まず、該当する場合のみ参照する。Optional Standardが存在すること自体は、その機能を各プロジェクトへ新規導入する理由にはならない。
+AIはOptional Standardを先回りしてすべて読まず、該当する場合だけ参照します。Optional Standardが存在すること自体は、その機能を各projectへ導入する理由にはなりません。
 
-## 既存プロジェクトへの適用
+具体的なimplementation、migration、verification、troubleshootingの手順はOptional StandardではなくPlaybookへ置きます。
 
-Standardは原則として、今後の判断、新規実装、変更箇所のデフォルトとして適用する。
+## 既存projectへの適用
 
-既存実装が現在のStandardと異なることだけを理由に、一括移行、全面リファクタリング、ライブラリ置換、追加機能の実装、インフラの近代化を要求しない。既存方式は必要な変更を行う際に寄せることを基本とする。
+Standardは原則として、今後の判断、新規実装、変更箇所のdefaultとして適用します。
 
-Standardレビューで見つかった事項は次の3種類に分ける。
+既存実装が現在のStandardと異なることだけを理由に、一括migration、全面refactoring、library置換、追加機能、infrastructure更新を要求しません。
 
-- **Required**: セキュリティ、データ整合性、必須CIゲート等に関わり、現在の問題として修正が必要。
+Standard reviewで見つかった事項は次の3種類に分けます。
+
+- **Required**: security、data integrity、必須CI gate等に関わり、現在の問題として修正が必要。
 - **Adopt going forward**: 既存方式は直ちに移行せず、新規・変更箇所からStandardへ寄せる。
 - **Optional improvement**: 品質向上、近代化、追加機能等。Standard適合とは分離する。
 
-これにより「Standard適合」をリポジトリ全体の改善監査や技術更新ロードマップと同義にしない。
+具体的な導入・棚卸し方法は `ai-dev-platform` のAdoption Guideで扱います。
 
 ## Standard以外への配置
 
-新しい知識や資産をStandardへ追加する前に、次の配置先を検討する。
+新しい知識や資産をStandardへ追加する前に、次の配置先を検討します。
 
-- 特定ライブラリのデフォルト候補・比較 → **Recommendation**
-- 詳細な実装手順、検証方法、失敗例 → **Playbook**
-- 対象ユーザー、利用環境、認証・認可等のプロジェクト前提 → **Project Context**
-- 基本UIの実装 → 各プロジェクトで `shadcn/ui` 等を利用
-- 業務ドメイン固有のUI → **そのドメインを所有する側**
-- 複数プロジェクトで再利用するコード → **実際の重複が確認されてから分離を検討**
-- 1プロジェクト固有の判断 → **Project側**
-- 重要な判断の背景 → **ADR**
-- 実際に繰り返しが確認されていない初期構成 → **まだTemplate化しない**
+- 現時点のlibrary / toolのdefault → **`ai-dev-platform/recommendations`**
+- 詳細なimplementation、migration、verification、failure example → **`ai-dev-playbook`**
+- UI Foundations / Components / Patterns / Templates / Catalog / design reference → **`ui-platform`**
+- 対象user、利用環境、認証・認可等のproject前提 → **Project Context**
+- 業務domain固有UI → **そのdomainを所有するproject**
+- 1project固有の判断 → **Project側ADR等**
+- 重要なStandard自体の判断背景 → **Standards側ADR**
+- 実際に繰り返しが確認されていない共通資産 → **まだ共通化しない**
 
-存在しないShared UIや共通パッケージを将来の受け皿として前提にしない。
-
-ADRは「何を標準化しないか」を列挙するためには作らない。重要な決定・変更の理由を将来説明する価値がある場合にのみ残す。
+ADRは「何を標準化しないか」を列挙するためには作りません。重要な決定・変更の理由を将来説明する価値がある場合にだけ残します。
 
 ## Optional Standard と Recommendation の判別
 
-どちらも「該当する場合のみ参照する」「Coreより詳細に書いてよい」ため混同しやすい。次の順で判別する。
+### 1. 不統一そのものが実害を生むか
 
-### 1. 不統一が実害を生むか
-
-**プロジェクトごとの不統一によって、連携・セキュリティ・運用・ユーザー体験の一貫性に、プロジェクト単独では解決できない実害が生じるか。**
+**projectごとの不統一によって、連携・security・運用・UXの一貫性に、project単独では解決できない実害が生じるか**で判断します。
 
 - 実害が生じる → **Optional Standard**。揃っていること自体が価値になる。
-- 実害が生じない → **Recommendation**。価値は探索コストと事故率の低減にとどまる。
+- 実害が生じない → **Recommendation**。探索costと事故率を下げるためのcurrent default。
 
-Status APIのレスポンス形式は、揃っていなければ共通ダッシュボードが成立しない。Themeの Semantic Token体系は、揃っていなければアプリ間でユーザーが学び直しになり、横断的なUXの一貫性を損なう。
-一方、画像ビューアのライブラリがプロジェクトごとに違っても、他プロジェクトとの連携や共通UXには直接影響しない。
+たとえばStatus APIのresponse形式は、揃っていなければ共通monitoringが成立しません。一方、画像viewerのlibraryがprojectごとに違っても、他projectとの機械的連携は通常壊れません。
 
-### 2. 「揃えよ」と「何に揃っているか」を分ける
+### 2. 「揃える判断」と「現在何を選ぶか」を分ける
 
-同じ話題が両方へ分かれるのは正常とする。
+同じtopicが両方へ分かれるのは正常です。
 
 - 統一すること自体の要求 → **Standard**
-- 現時点の既定が何か → **Recommendation**
+- 現時点の具体的な選択 → **Recommendation**
 
-例として、JSのツールチェーンを「同一リポジトリ内で混在させない」はArchitecture Standardが持ち、「新規採用時の既定が何か」はRecommendationが持つ。既存プロジェクトをRecommendationへ機械的に移行させない。
+例: JS package managerを同一repository内で混在させないことはStandard、新規採用時のcurrent defaultはRecommendationです。
 
-### 3. 補助的な判断材料
+### 3. 拘束力
 
-| | Optional Standard | Recommendation |
-|---|---|---|
-| 不統一のコスト | 連携・UXが壊れる | 探索時間と事故率が上がる |
-| 主語 | 自分たちで決めた仕様 | 外部で作られたものの選定 |
-| 前提とする寿命 | 変わりにくい | 陳腐化する前提で確認日を持つ |
-| 引き方 | 機能・作業から引く | 用途・部品から引く |
+- **Optional Standard**: Standardとして従う。重要な逸脱はproject側ADR等に理由を残す。
+- **Recommendation**: 特に理由がなければ従う。逸脱にADRは要求しない。
 
-外部ライブラリの選定は、Coreへの追加条件である「長期間変わりにくいか」を構造的に満たせない。またStandardが古びると不整合が起きるのに対し、ライブラリの推奨が古びると未メンテナンスのライブラリを導入するリスクになり、失敗の性質と対処が異なる。このため同じ棚へ置かず、確認日とともにRecommendationで管理する。
+## Standardへ製品名を書いてよい場合
 
-### 4. 拘束力
+具体的な製品名は原則としてRecommendationで扱います。ただし、次をすべて満たす基盤はStandardへ名指しできます。
 
-- **Optional Standard**: Standardとして従う。重要な逸脱はプロジェクト側ADR等に理由を残す。
-- **Recommendation**: 特に理由がなければ従う。逸脱にADRを求めず、選定理由をPR説明等へ短く残す程度でよい。
+- Application全体のarchitecture、UI基盤、data model、development flow等を大きく規定する。
+- 差し替えcostが局所的ではなく、projectごとに毎回選び直す前提が成り立たない。
+- 選定を変える場合、ADRを伴う規模のarchitecture decisionになる。
 
-Recommendationの逸脱を重く扱わない。記録コストを上げると参照されなくなり、層として機能しなくなる。
+Django、PostgreSQL、`shadcn/ui`、Tailwind CSS等はこの条件を満たし得ます。特定機能に閉じた差し替え可能なlibraryはRecommendationで扱います。
 
-### 5. Standardへ製品名を書いてよい場合
+## document構造
 
-具体的な製品名は原則としてRecommendationで扱う。ただし次をすべて満たすものは、例外としてStandardへ名指しできる。
-
-- アプリ全体の構造、Token体系、開発フローを規定する基盤である。
-- 差し替えコストが局所的でなく、プロジェクト単位で選び直す前提が成り立たない。
-- 選定を変える場合、ADRを伴う規模の決定になる。
-
-Django、PostgreSQL、`shadcn/ui`、Tailwind CSSはこれに該当する。特定機能に閉じて差し替え可能な部品を、この例外に含めない。
-
-## ドキュメント構造
-
-3つのStandards領域は増やさない。
+Standardsのtop-level領域は原則として次の3つから増やしません。
 
 ```text
 standards/
@@ -139,19 +121,12 @@ standards/
     └── optional/
 ```
 
-各領域の `README.md` をCoreとし、Optionalはその領域配下に置く。
-新しいトップレベルStandardカテゴリを安易に追加しない。
-
-## バリエーション追加
-
-既存Standardに選択肢が存在する場合も、用途ごとに先回りして増やさない。
-例えば標準レイアウトは、まず既存テンプレートを拡張して対応し、同じ派生が複数プロジェクトで繰り返された場合にのみ昇格を検討する。
+各領域の `README.md` をCoreとし、Optionalはその領域配下へ置きます。
 
 ## 結果
 
-- Coreは短く保つ。
-- 特定機能に必要な詳細仕様はOptionalへ分離する。
-- Standard以外の適切な配置先を選べる。
-- Optional StandardとRecommendationが同じ棚へ混ざることを防ぐ。
-- 将来の共通資産を仮定して構造を増やさない。
-- 既存プロジェクトに不要な一括移行を要求しない。
+- Coreを短く保てる。
+- 特定機能の共通契約だけをOptionalへ分離できる。
+- implementation手順やcurrent library選定をStandardから分離できる。
+- UI implementationをUI Platformへ集約できる。
+- Standard適合をrepository全体の近代化projectへ拡張せずに済む。
