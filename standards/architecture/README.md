@@ -200,4 +200,3 @@ UI上のエラー表現は [Application UI Standard](../application-ui/) に従�
 特定機能を扱う場合のみ参照します。
 
 - [Status API / Monitoring Contract](optional/status-api.md) — 共通dashboard等からservice状態を取得する場合
-- [Docker Compose ネットワークとポート公開](optional/container-network.md) — Docker Composeの公開境界を扱う場合
