@@ -37,7 +37,7 @@ Platform自体の初回導入や既存プロジェクトへの適用方法は、
 | `standards/application-ui/` | **画面構造・操作をどう揃えるか** | UI原則、Layout、Semantic Token、コンポーネント利用方針 |
 | `decisions/` | **Standard自体のADR** | なぜ現在のStandard構成・境界になったか |
 
-本リポジトリには、Recommendations、導入手順、詳細Playbook、UI実装コード、Application向けAIルーターを重複して持ちません。
+本リポジトリには、Recommendations、導入手順、詳細Playbook、UI実装コード、Application向けAIルーターを重複して持ちません。`ai/ONBOARDING.md` は旧参照先を壊さないための移行用互換ポインタだけを残し、ルーティング本文はPlatform側を正とします。
 
 ## Core と Optional
 
@@ -87,7 +87,7 @@ Standardレビューで見つかった事項は次のように扱います。
 4. **追加より既存ルールへの統合を優先する**: 既存Standardで判断できるなら新しいルールを作らない。
 5. **HowをStandardへ持ち込まない**: 実装・移行・検証・障害対応はPlaybookへ分離する。
 
-Standardへの追加基準は [ADR-0003](decisions/adr-0003-core-and-optional-standards.md)、共有資産の境界は [ADR-0004](decisions/adr-0004-shared-asset-boundaries.md)、共有資産をフォークして利用する場合の運用は [ADR-0005](decisions/adr-0005-upstream-fork-operation.md) を参照してください。
+Standardへの追加基準は [ADR-0003](decisions/adr-0003-core-and-optional-standards.md)、現在の共有資産境界は [ADR-0006](decisions/adr-0006-platform-composition-root.md)、共有資産をフォークして利用する場合の運用は [ADR-0005](decisions/adr-0005-upstream-fork-operation.md) を参照してください。旧境界のADR-0004は履歴としてSupersededの状態で残します。
 
 ## 意図的に扱わないもの
 
