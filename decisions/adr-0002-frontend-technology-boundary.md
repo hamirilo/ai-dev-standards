@@ -1,34 +1,45 @@
-# ADR-0002: フロントエンド技術境界の再定義 — React Islands を標準とし htmx の役割を限定する
+# ADR-0002: React Islandsをinteractive UIの標準としhtmxの役割を限定する
 
 **ステータス**: 採用
-**置換対象**: ADR-0001（非推奨化）
+**置換対象**: ADR-0001（非推奨）
 
 ## コンテキスト
-以前のスタック定義（ADR-0001相当）では、React Islands は「複雑な UI のみ」の位置づけだった。
-しかし、共通UIライブラリのコンポーネント群（モーダル、フォーム連携、トースト通知など）がReactで充実した結果、軽量JS（旧来の Alpine.js や生のJS等）が担っていた領域の多くが React に移行し、二重管理が発生していた。
-「軽量JSで足りるか、React Island にすべきか」の判断基準が曖昧になり、プロジェクト間での不統一が生じていた。
+
+Django Templatesをpage shell / SSR / Form / authorizationの基盤として維持しながら、interactive UIを複数のJavaScript手段へ分散させると、同じUI stateをReact、htmx、自前JavaScript等で実装できてしまい、Application間で判断がぶれます。
+
+UI PlatformはReact ComponentとDjango接続用Islandsを提供するため、interactive UIの標準手段をReactへ寄せ、htmxはHTMLをserverから部分更新する用途へ限定します。
 
 ## 決定
-**React Islands をインタラクティブ UI の標準手段とする。** 
-htmx はサーバー起点の部分 HTML 更新に限定し、その他のUI状態管理のための軽量JSフレームワークは原則非推奨とする。
 
-### 技術の役割定義
-| 技術 | 役割 | 具体的な用途 |
-|---|---|---|
-| **Django Templates** | すべての画面のベース | SSR、ルーティング、フォーム定義、権限管理 |
-| **React Islands** | **インタラクティブ UI の標準** | Dialog, DatePicker, Select, Toast, Table等のインタラクティブ要素すべて |
-| **htmx** | サーバー起点の部分 HTML 更新のみ | 下記の許可リストに限定 |
+**React Islandsをinteractive UIの標準手段とする。**
 
-### htmx を使ってよい場面（許可リスト）
-以下の用途に **限定** する。
-1. **サーバー起点のリスト更新**: 検索フィルター適用後の一覧差し替え、ページネーション、無限スクロール。
-2. **React Island 内部からの HTML 取得**: React製のダイアログの枠組み内から、`htmx.ajax`等で Django Form の HTML を取得するパターン。
-3. **サーバー → クライアント通知**: `HX-Trigger` によるサーバーからの軽量イベント通知（Toast 表示トリガー等）。
+| 技術 | 責務 |
+|---|---|
+| Django Templates | Routing、page shell、SSR、Django Form、server-side authorization |
+| React Islands | Dialog、DatePicker、Select、Toast、Table等のclient-side UI stateを持つinteraction |
+| htmx | Serverから返るHTMLによる部分更新と軽量event接続 |
+
+### htmxを利用する代表的な場面
+
+1. 検索・filter・pagination等、serverで生成したlist HTMLを差し替える。
+2. React IslandのDialog等からDjango Form HTMLを取得して表示する。
+3. `HX-Trigger` 等でserver処理結果をclient側UI feedbackへ接続する。
+
+この範囲を超えてclient-side UI stateを複雑に持つ場合はReact Islandを優先します。
+
+Alpine.js等、同じinteractive UI layerを増やす軽量frameworkを標準にはしません。
 
 ## 理由
-- 共通UIライブラリによるReactコンポーネントが十分充実しているため、「迷ったら React Island」という明確な基準を確立する。
-- サーバー起点の HTML 差し替えは React よりも htmx がシンプルで SSR-first 原則と整合するため残すが、用途を無秩序に拡大しないよう許可リストで制限する。
+
+- UI stateの実装手段を絞り、AIと人間の判断を安定させる。
+- Django Form、SSR、authorizationをserver側へ維持できる。
+- Server-generated HTMLの単純な差し替えではhtmxの方が小さく保てる。
+- UI PlatformのReact Component / IslandsをApplication間で再利用できる。
 
 ## 結果
-- 「迷ったら React Island」という明確な判断基準ができ、AI エージェントの実装品質が安定する。
-- 技術スタックの選択肢が減り、学習・保守コストが低下する。
+
+- 「client-side UI stateを持つならReact Island」をdefaultにできる。
+- htmxとReactの責務が重複しにくくなる。
+- DjangoをBFF / API-only serverへ不用意に変えずにrich UIを利用できる。
+
+具体的なDjango / React接続方法はPlaybookとUI Platformで扱います。
