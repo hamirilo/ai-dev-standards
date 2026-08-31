@@ -37,7 +37,7 @@ Platform自体の初回導入や既存プロジェクトへの適用方法は、
 | `standards/application-ui/` | **画面構造・操作をどう揃えるか** | UI原則、Layout、Semantic Token、コンポーネント利用方針 |
 | `decisions/` | **Standard自体のADR** | なぜ現在のStandard構成・境界になったか |
 
-本リポジトリには、Recommendations、導入手順、詳細Playbook、UI実装コード、Application向けAIルーターを重複して持ちません。`ai/ONBOARDING.md` は旧参照先を壊さないための移行用互換ポインタだけを残し、ルーティング本文はPlatform側を正とします。
+本リポジトリには、Recommendations、導入手順、詳細Playbook、UI実装コード、Application向けAIルーターを重複して持ちません。
 
 ## Core と Optional
 
@@ -47,7 +47,7 @@ Platform自体の初回導入や既存プロジェクトへの適用方法は、
 - Coreは少数で変わりにくい判断だけを持つ
 - Optionalは該当機能を扱う場合のみ参照する
 - Optionalは「揃っていること自体に価値がある仕様」に限定する
-- 実装手順・移行手順・検証手順はPlaybookへ置く
+- 具体的な実装・移行・検証手順はPlaybookへ置く
 - 現時点のライブラリ選定はRecommendationへ置く
 - プロジェクト固有の判断はProject Context / ADRへ置く
 
@@ -77,7 +77,7 @@ Standardレビューで見つかった事項は次のように扱います。
 | **UI Platform** | UIをどう設計し、何を再利用するか | `ui-platform` |
 | **Project Context / ADR** | このプロジェクト固有ではどうするか | 各Application |
 
-同じ判断や手順を複数の層へコピーしません。Standardには判断原則だけを残し、具体例・コマンド・移行チェックリスト・トラブルシューティングが必要になった場合はPlaybookを参照します。
+同じ判断や手順を複数の層へコピーしません。Standardには技術選定・責務境界・守る制約を残し、具体例・コマンド・移行チェックリスト・トラブルシューティングはPlaybookへ置きます。
 
 ## 基本原則
 
@@ -85,9 +85,9 @@ Standardレビューで見つかった事項は次のように扱います。
 2. **Standardからの逸脱は許容する**: 重要な逸脱だけをプロジェクト側ADR等に記録する。
 3. **繰り返しがないものを先回りして標準化しない**: 将来必要になるかもしれないという理由でStandardを増やさない。
 4. **追加より既存ルールへの統合を優先する**: 既存Standardで判断できるなら新しいルールを作らない。
-5. **HowをStandardへ持ち込まない**: 実装・移行・検証・障害対応はPlaybookへ分離する。
+5. **具体的な実装手順をStandardへ持ち込まない**: 技術選定・責務境界・守る制約はStandard、実装・移行・検証・障害対応の手順はPlaybookへ分離する。
 
-Standardへの追加基準は [ADR-0003](decisions/adr-0003-core-and-optional-standards.md)、現在の共有資産境界は [ADR-0006](decisions/adr-0006-platform-composition-root.md)、共有資産をフォークして利用する場合の運用は [ADR-0005](decisions/adr-0005-upstream-fork-operation.md) を参照してください。旧境界のADR-0004は履歴としてSupersededの状態で残します。
+Standardへの追加基準は [ADR-0003](decisions/adr-0003-core-and-optional-standards.md)、現在の共有資産境界は [ADR-0006](decisions/adr-0006-platform-composition-boundary.md)、共有資産をフォークして利用する場合の運用は [ADR-0005](decisions/adr-0005-upstream-fork-operation.md) を参照してください。
 
 ## 意図的に扱わないもの
 
