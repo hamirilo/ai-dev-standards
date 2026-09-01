@@ -24,7 +24,8 @@
 
 - `USE_TZ = True` とし、DBにはUTCで保存する。
 - 表示タイムゾーンは `Asia/Tokyo` を基本とする。
-- ローカル日付はDjangoのtimezone-aware APIで扱い、naive datetimeを作らない。
+- 「今日」など表示タイムゾーン基準のローカル日付は `timezone.localdate()` を使う。`timezone.now().date()` や `date.today()` は使わない。
+- naive datetimeを作らない。
 - 日付境界に関わる判定は境界時刻を含めて検証する。
 
 機械的に検出できる誤用の既定は [Recommendations / Quality](https://github.com/hamirilo/ai-dev-platform/blob/main/recommendations/quality.md) を参照してください。
