@@ -1,7 +1,9 @@
 # Architecture Standard
 
 本ドキュメントは、対象プロジェクトの大半に適用する **Core Architecture Standard** です。
-特定機能だけに必要な詳細仕様は `optional/` 配下に分離し、該当機能を扱う場合のみ参照します。
+特定機能だけに必要な共通契約は `optional/` 配下に分離し、該当機能を扱う場合のみ参照します。
+
+具体的な実装例、変更手順、移行、検証、トラブルシューティングは [ai-dev-playbook](https://github.com/hamirilo/ai-dev-playbook) の責務です。
 
 ---
 
@@ -9,8 +11,8 @@
 
 - **Backend**: Django
 - **Database**: PostgreSQL
-- **社内向け認証**（社内システムの従業員ログイン）: OIDC + Django Session
-- **社外・一般ユーザー向け認証**: 固定しない（プロジェクト要件に応じて設計）
+- **社内向け認証**: OIDC + Django Session
+- **社外・一般ユーザー向け認証**: 固定しない
 - **API**: 必要な場合のみ Django Ninja
 - **Frontend Base**: Django Templates (SSR)
 - **Interactive UI**: React Islands
@@ -22,28 +24,26 @@
 
 - `USE_TZ = True` とし、DBにはUTCで保存する。
 - 表示タイムゾーンは `Asia/Tokyo` を基本とする。
-- 「今日」を求めるときは `timezone.localdate()` を使う。`timezone.now().date()` と `date.today()` は使わない。
-- naive datetimeを生成しない。テストのフィクスチャ・ファクトリも aware datetime で作成する。
+- 「今日」など表示タイムゾーン基準のローカル日付は `timezone.localdate()` を使う。`timezone.now().date()` や `date.today()` は使わない。
+- naive datetimeを作らない。
+- 日付境界に関わる判定は境界時刻を含めて検証する。
 
-国内専用のシステムでも、`USE_TZ = False`（JSTでのnaive保存）へは切り替えません。コンテナのログや外部APIのタイムスタンプはUTC・オフセット付きで届くため、naive保存にしても変換境界は消えず、由来のタイムゾーン情報を失うぶん誤りに気づきにくくなります。Djangoの既定（`USE_TZ = True`）から外れる構成は、人とAIの双方に「このプロジェクトは非標準である」という前提知識を要求することも避けます。
-
-`timezone.now().date()` は「UTCでの今日」を返します。表示タイムゾーンがUTCより東にある場合、日付が切り替わってからUTCが追いつくまでのあいだ（`Asia/Tokyo` では00:00〜08:59）だけ前日が返り、期限判定、日付の集計、過去日バリデーションが静かに誤動作します。1日のうち一定時間しか再現せず、相対日付で作ったフィクスチャでは顕在化しないため、日付境界に関わる判定は境界時刻を含む複数の時刻で検証します。
-
-この節の誤用パターンの多くは機械的に検出できます。推奨する検査設定は [Recommendations / Quality](../../../recommendations/quality.md#日時の取り扱いの検査) を参照してください。
+機械的に検出できる誤用の既定は [Recommendations / Quality](https://github.com/hamirilo/ai-dev-platform/blob/main/recommendations/quality.md) を参照してください。
 
 ### 依存関係・ツールチェーン
 
 - Pythonの環境・依存管理は **uv** で統一する。
-- 依存はロックファイル（`uv.lock`、`bun.lock` 等）で固定し、Gitへコミットする。
-- JS側は、同一リポジトリ内でパッケージマネージャやロックファイルを混在させない。新規プロジェクトの既定は [Recommendations / Toolchain](../../../recommendations/tooling.md) を参照する。
+- 依存はlockfileで固定し、Gitへcommitする。
+- JS側は同一リポジトリ内でpackage managerやlockfileを混在させない。
+- 新規プロジェクトのtoolchain既定は [Recommendations / Toolchain](https://github.com/hamirilo/ai-dev-platform/blob/main/recommendations/tooling.md) を参照する。
 
 ---
 
 ## 2. フロントエンドとバックエンドの境界
 
 - Django Templatesがルーティング、ページシェル、SSR、Django Form、権限適用を担う。
-- **インタラクティブUIの標準手段はReact Islands** とする。Dialog、DatePicker、Select、Toast、TableなどのUI状態を持つ要素はReactを優先する。
-- htmxはサーバー起点の部分HTML更新に限定する。検索結果、ページネーション等のHTML差し替えや、サーバーイベント通知などに利用する。
+- **インタラクティブUIの標準手段はReact Islands** とする。
+- htmxはサーバー起点の部分HTML更新に限定する。
 - ページ全体のReact化やReact Router等によるルーティングは標準にしない。
 - Django Formで完結する処理のためだけにJSON APIを作らない。
 
@@ -53,54 +53,47 @@
 
 ## 3. Django アーキテクチャ
 
-モデルは太く、ビューは薄く保つことを基本とし、必要性のないRepository / UseCase等の抽象レイヤーを増やしません。
+- DjangoのModel / QuerySet / Form / View等の標準的な責務を優先し、必要性のないRepository / UseCase等の抽象レイヤーを先に増やさない。
+- どの入口から保存されても守るべき不変条件や状態遷移は、ModelまたはDB制約で守れる形にする。
+- 業務認可は専用の認可層へ集約し、View、Template、APIへ同じ判定を分散させない。
+- 複数Model横断、外部I/O、明確なtransaction境界等がある場合のみService等の追加レイヤーを検討する。
 
-| 処理内容 | 基本的な記述場所 |
-|---|---|
-| 不変条件・状態遷移 | `models.py` |
-| 再利用するクエリ | QuerySet / Manager |
-| 表示用プロパティ | Model property |
-| 入力検証 | `forms.py` |
-| 権限判定 | 専用permission module |
-| 画面遷移・レンダリング | `views.py` |
-
-`services.py` は、複数モデル横断、外部API通信、明確なトランザクション境界など、モデル単体に置くと責務が不自然になる場合に利用します。
+具体的な責務配置や実装例は [Django実装 Playbook](https://github.com/hamirilo/ai-dev-playbook/blob/main/playbooks/django-implementation.md) を参照してください。
 
 ---
 
 ## 4. 認可
 
 - 業務機能の認可に `is_staff` / `is_superuser` を流用しない。
-- 業務権限は `can_manage_xxx(user)` 等の専用認可層へ集約する。
-- Django Adminアクセスなど、Django本来の意味で `is_staff` / `is_superuser` を利用することは許容する。
-- 認可データモデル自体（RBAC/ABAC、部署権限等）はプロジェクト要件に応じて設計する。
+- Django Adminアクセスなど、Django本来の意味での利用は許容する。
+- 業務権限は専用の認可層へ集約する。
+- RBAC / ABAC、部署権限等のデータモデルはプロジェクト要件に応じて設計する。
 
 ---
 
 ## 5. Security Baseline
 
-- DjangoのCSRF保護を無効化して問題を回避しない。React Islandsから状態変更する場合もCSRFトークンを正しく送信する。
-- Django TemplateからReactへデータを渡す場合は、安全なシリアライズ手段を利用し、文字列連結でJSONを埋め込まない。
+- DjangoのCSRF保護を無効化して問題を回避しない。React Islandsから状態変更する場合もCSRF保護を維持する。
+- Django TemplateからReactへデータを渡す場合は安全なシリアライズ手段を利用する。
 - Secret、Token、Password、DB認証情報等はGit管理せず、コードと分離する。
 - 外部HTTP通信にはtimeoutを設定し、失敗を握り潰さない。
-- HTTPS利用時は証明書検証を無効化しない。既存社内環境でHTTPが必要な場合は許容するが、機密情報を平文で送る必要性は個別に評価する。
-- リソースの存在自体を秘匿する必要がある場合は404、存在を隠す必要がなく単なる権限不足であれば403を基本とする。
+- HTTPS利用時は証明書検証を無効化しない。
+- リソースの存在自体を秘匿する必要がある場合は404、単なる権限不足は403を基本とする。
 
-### アップロードファイルの検証
+### アップロードファイル
 
 ユーザーがアップロードするファイルを扱う場合は、次を守ります。
 
-- 検証はサーバー側で行う。サイズ上限と許可する種類を確認し、種類は拡張子・Content-Typeの自己申告だけでなくファイル内容（マジックバイト）でも判定する。クライアント側の制限（`accept` 属性、アップロードUIの設定等）はUX改善であり、防御として扱わない。
-- 元のファイル名を保存パスへそのまま使わない。表示用のファイル名はデータとして別に持ち、レスポンスヘッダへ出す場合はエスケープする。
-- アップロードされたファイルも認可対象のデータとして扱う。URLの推測やIDの列挙で、権限のないファイルへ到達できる配信をしない。
-- SVG・HTML等、ブラウザがコードとして実行しうる形式は原則許可しない。必要な場合はインライン表示を避け、`Content-Disposition: attachment` と `X-Content-Type-Options: nosniff` を設定して配信する。
+- サイズ上限と許可する種類をサーバー側で検証する。拡張子・Content-Typeの自己申告だけを信頼しない。
+- 元のファイル名を保存パスへそのまま使わない。
+- アップロード済みファイルも認可対象のデータとして扱う。
+- SVG・HTML等、ブラウザがコードとして実行しうる形式は原則許可しない。必要な場合は安全な配信方法を明示する。
 
-配信方式、ストレージ、非同期アップロードの構成はプロジェクト側の判断とし、Standardでは固定しません。
+配信方式、Storage、非同期アップロード構成はプロジェクト側で決めます。
 
 ### 監査ログ
 
-社内システムでは、重要な操作や権限変更について監査可能な記録を残します。すべてのCRUDを無条件に監査対象とはしません。
-認証失敗、権限変更、破壊的操作、一括処理、機密データ変更、管理者操作などを優先します。
+社内システムでは、認証失敗、権限変更、破壊的操作、一括処理、機密データ変更、管理者操作等、後から説明が必要な重要操作を優先して監査可能な記録を残します。すべてのCRUDを無条件に監査対象とはしません。
 
 ---
 
@@ -108,7 +101,7 @@
 
 本番環境では **構造化ログを原則必須** とします。
 
-共通して扱う基本フィールド:
+基本フィールド:
 
 - `timestamp`
 - `level`
@@ -116,19 +109,18 @@
 - `service`
 - `environment`
 - `logger`
-- `request_id`（HTTPリクエストでは原則必須）
+- `request_id`（HTTP requestでは原則必須）
 - `user_id`（必要な場合のみ）
-- `action`（業務イベントとして意味がある場合）
+- `action`（業務eventとして意味がある場合）
 
-運用原則:
+原則:
 
-- `DEBUG`: 開発・詳細調査、`INFO`: 正常な重要イベント、`WARNING`: 継続可能な異常、`ERROR`: 処理失敗、`CRITICAL`: サービス継続に重大な影響、という意味を基本とする。
-- 検索・集計したい値はmessage文字列だけに埋め込まず、構造化フィールドとして持つ。
+- 検索・集計したい値はmessage文字列だけに埋め込まず、構造化fieldとして持つ。
 - 想定外例外ではstack traceを残す。
 - Secret / Token / Passwordをログへ出さない。個人情報も必要最小限とする。
 - 本番ログ用途に `print()` を使わない。
 
-ログ集約製品、保持期間、具体的なloggingライブラリ、request ID生成方式まではStandardで固定しません。
+ログ集約製品、保持期間、具体的なlogging library、request ID生成方式まではStandardで固定しません。
 
 ---
 
@@ -139,33 +131,25 @@
 網羅率そのものを目的にせず、壊れると影響が大きい振る舞いを優先します。
 
 - ビジネスルール
-- 権限
+- 認証・認可
 - 状態遷移
 - DB制約・重要な入力制約
 - 重要な失敗ケース
-- 外部連携などの境界
+- 外部連携等の境界
 
-フレームワーク自身の挙動や単純なテンプレート描画を重複して細かくテストすることは求めません。
-
-テスト失敗が発生した場合は、失敗を消すこと自体を目的に期待値・検証範囲を弱めません。まず実装・仕様・テストのどこに不整合があるかを確認し、原因側を修正します。仕様変更に伴って期待値を変更する場合は、その変更が意図した仕様であることを確認します。
+型チェック、Linter、Build、対象プロジェクトの基本テストは、該当する場合に必須ゲートとして扱います。
 
 ### Error Handling
 
 **失敗を隠して成功扱いにせず、エラー抑制より根本原因の解決を優先します。**
 
-- 例外、型エラー、Lint/Buildエラー、テスト失敗等が発生した場合は、まず原因を特定し、可能な限り原因側を修正する。
-- エラーを消すことだけを目的に、`try/except`、過剰なデフォルト値、`|| true`、警告無効化、型チェック抑制等を追加しない。
-- `except Exception: pass` のように例外を握り潰さない。広すぎる例外捕捉も、境界での変換・ログ・再試行等の明確な責務がない限り避ける。
-- 例外を捕捉する場合は、その層で処理する理由を明確にする。ユーザー向けエラーへの変換、トランザクション制御、再試行、代替経路、必要なログ記録などを目的とする。
-- デフォルト値やフォールバックは「値が存在しないことが正常な仕様」の場合に利用する。本来必須の値が欠落している問題を隠すためには使わない。
-- ユーザー向けメッセージと内部エラー詳細を分離する。
-- 想定可能な業務エラーは明示的に扱う。
-- 想定外例外は障害調査に必要なコンテキストとstack traceとともにログへ残す。
-- 外部サービス障害では、必要に応じて再試行可能性をユーザーへ伝えられるようにする。
+- エラーを消すことだけを目的に、例外の握り潰し、過剰なfallback、`|| true`、警告無効化、型チェック抑制等を追加しない。
+- 例外を捕捉する場合は、その層で処理する明確な責務を持たせる。
+- ユーザー向けmessageと内部error詳細を分離する。
+- 想定外例外は調査に必要なcontextとstack traceをログへ残す。
+- fallbackや継続処理を行う場合は、それが正常な仕様として説明できることを求める。
 
-この原則は「必ずfail-fastにする」という意味ではありません。業務上フォールバックや継続処理が正しい場合は許容しますが、失敗を正常系へ変換する理由が仕様として説明できることを求めます。
-
-UI上のエラー表現は [Application UI Standard](../application-ui/) に従います。TypeScriptの型エラー回避については [TypeScript / 型安全 Standard](typescript.md) も参照してください。
+UI上のエラー表現は [Application UI Standard](../application-ui/) に従います。TypeScriptの型安全は [TypeScript Standard](typescript.md) を参照してください。
 
 ---
 
@@ -173,15 +157,14 @@ UI上のエラー表現は [Application UI Standard](../application-ui/) に従�
 
 - Django Template / Formで完結するならAPIを作らない。
 - React Islandsを使うこと自体をAPI作成理由にしない。
-- 外部システム連携や、JSON境界が明確に適する複雑な非同期データ取得ではDjango Ninjaを利用できる。
-- アプリ間連携はAPI一択にしない。リアルタイム性や疎結合が必要ならAPI、定期同期や大量データ連携ならバッチ・ファイル等も含め用途に応じて選択する。
+- 外部システム連携やJSON境界が明確に適する処理ではDjango Ninjaを利用できる。
+- アプリ間連携はAPI一択にせず、リアルタイム性、データ量、結合度に応じてAPI、batch、file等を選ぶ。
 
 ### ドメインデータの所有
 
-- 他システムが参照するマスタデータは、その正を持つプロジェクトが所有する。
-- 所有の境界は「人に関する情報か」ではなく「他システムが参照するマスタか」で判断する。
-- 各アプリ固有の業務データは、人や組織に紐づいていてもマスタ所有プロジェクト側へ集約しない。
-- 他のアプリがマスタ情報を必要とする場合は、所有プロジェクトが公開する連携境界を利用する。連携方式は上記の原則に従って選択する。
+- 他システムが参照するmaster dataは、その正を持つprojectが所有する。
+- 各app固有の業務dataをmaster所有projectへ集約しない。
+- 他appがmaster情報を必要とする場合は、所有projectが公開する連携境界を利用する。
 
 特定の機械連携で共通契約が必要な場合はOptional Standardとして仕様を定義します。
 
@@ -189,30 +172,27 @@ UI上のエラー表現は [Application UI Standard](../application-ui/) に従�
 
 ## 9. 非同期・定期処理
 
-非同期・定期処理は、必要なアプリだけ導入します。通常のCRUDや短時間で完了する処理を、理由なく非同期化しません。
+非同期・定期処理は、必要なApplicationだけ導入します。通常のCRUDや短時間で完了する処理を理由なく非同期化しません。
 
-次のような処理では非同期化を検討します。
-
-- ユーザー応答を待たせる必要がない処理
-- 処理時間が長い、または応答時間が安定しない処理
-- 外部I/O、大量データ処理、メール送信、ファイル変換
-- 定期同期・集計・メンテナンス
-- 失敗時に再試行したい処理
-
-非同期処理を導入した場合は、失敗のログ記録、再実行の考慮、可能な範囲での冪等性、必要に応じた処理状態の可視化を行います。
+非同期処理を導入した場合は、失敗の記録、再実行、可能な範囲での冪等性、必要に応じた処理状態の可視化を考慮します。
 
 ---
 
 ## 10. コンテナと配布
 
-コンテナで配布するアプリケーションでは、**CIで検証・作成したイメージを配布し、ステージング・本番はその同一イメージを取得して起動します。**
+コンテナで配布するApplicationでは、**CIで検証・作成したimageを配布し、staging / productionはその同一imageを取得して起動します。**
 
-- **CIでイメージをビルドし、レジストリへ配布する。** 実行環境でのビルドを通常運用にしない。
-- **CIでイメージのビルドを検証する。** テスト・型チェック・Linterの成功だけで、配布物が動くとは判断しない。
-- **ビルド失敗や成果物の欠落を隠さない。** 失敗を握り潰して、欠けた成果物を含むイメージを配布しない。
-- **実行環境でのビルドが必要な場合は、制約と解消条件をプロジェクト側のADRに残す。** 恒久的な既定にはしない。
+- CIでimageをbuildし、registryへ配布する。
+- CIでimage build自体を検証する。
+- build失敗や成果物の欠落を隠さない。
+- 実行環境でbuildする必要がある場合は、その制約をproject ADRへ残す。
+- host / LANへpublishするのは外部から直接必要なserviceだけとし、container間通信だけのserviceを理由なくpublishしない。
+- Compose標準のnetworkで満たせる要件のために不要なnetwork構成を増やさない。
 
-multi-stage構成、ビルド時の設定・秘密情報、プラットフォーム指定、既存環境の移行・検証は、[コンテナ配布 Playbook](https://github.com/hamirilo/ai-dev-playbook/blob/main/playbooks/container-delivery.md)を必要な場合のみ参照します。
+具体的な構成、移行、検証は次のPlaybookを参照してください。
+
+- [コンテナ配布](https://github.com/hamirilo/ai-dev-playbook/blob/main/playbooks/container-delivery.md)
+- [Docker Compose ポート公開](https://github.com/hamirilo/ai-dev-playbook/blob/main/playbooks/docker-compose-port-exposure.md)
 
 ---
 
@@ -220,5 +200,4 @@ multi-stage構成、ビルド時の設定・秘密情報、プラットフォー
 
 特定機能を扱う場合のみ参照します。
 
-- [Status API / Monitoring Contract](optional/status-api.md) — 共通ダッシュボード等からサービス状態を取得する場合
-- [Docker Compose ネットワークとポート公開](optional/container-network.md) — Docker Composeの `ports:`、サービス間接続、ホスト/LANへの公開境界を扱う場合
+- [Status API / Monitoring Contract](optional/status-api.md) — 共通dashboard等からservice状態を取得する場合

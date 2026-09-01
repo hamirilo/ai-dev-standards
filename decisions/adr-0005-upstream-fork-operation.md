@@ -1,39 +1,61 @@
-# ADR-0005: 共有資産のフォークにソース差分を持たない
+# ADR-0005: 共有資産のforkにsource差分を持たない
 
 **ステータス**: 採用
 
 ## コンテキスト
 
-[ADR-0004](adr-0004-shared-asset-boundaries.md) の共有資産（Standard、Playbook、UI Kit）は公開リポジトリとして管理する。これを採用する組織は、上流をそのまま参照するのではなく、フォークして使うことがある。理由は主に次の2つである。
+[ADR-0006](adr-0006-platform-composition-boundary.md) で定義する共有資産は公開repositoryとして管理し、利用組織がforkして利用できるようにします。
 
-1. **配布の所有**: パッケージレジストリはスコープをリポジトリ所有者に紐付ける（GitHub Packagesのnpmでは「スコープ = リポジトリ所有者」でなければ公開できない）。上流のパッケージをそのまま利用するには、上流所有者のレジストリを読む認証情報を各アプリとCIへ配る必要がある。
-2. **組織固有の追加**: 上流へ出せない社内固有の内容を足したくなる。
+forkの主な目的は次です。
 
-一方で、フォークにコードを分岐させると、上流を取り込み直すたびに衝突を解消する必要があり、上流へPRを出すときにも組織固有の差分が混ざる。「フォークしているが差分がない」状態と「差分が増えて追従できない」状態のどちらも起きやすく、どちらも意図した運用ではない。
+1. **配布・運用の所有**: UI package等を利用組織自身のscopeでpublishできる。
+2. **上流への往復路**: 組織内で検証した汎用改善をupstreamへ返せる。
+
+forkへ恒常的なsource差分を持つと、upstream追従、submodule参照、package publish、上流PRのすべてで差分管理が必要になります。
 
 ## 決定
 
-1. **フォークにソース差分を持たない。** フォークの目的は、配布の所有と上流への往復路であり、コードを分岐させることではない。
-2. **配布物の識別子（パッケージスコープ等）は、ソースに固定せず公開時にリポジトリ所有者から導出する。** 上流では従来と同じ名前で公開され、フォークでは自分のスコープで公開される。この方式ならフォークは差分ゼロを保てる。
-3. **汎用的な改善は上流へPRを出す。** 次のいずれも含まないものを汎用と判断する。
-   - 組織名・プロジェクト名・内部URL・内部ホスト名
-   - 特定プロジェクトのファイルパスやテンプレート名に依存する記述
-   - SSOTが組織内部にある生成物の生成スクリプト
-   - 特定プロジェクトの既知の不具合や移行途中の状態
-4. **組織固有のものはフォークへ足さず、それを所有するプロジェクトへ置く。** 複数プロジェクトで繰り返しが確認された時点で、フォークではなく別の共有資産として切り出す。
-5. **やむを得ずフォークへ差分を持つ場合は、その差分と再適用手順をリポジトリのREADMEへ書き、上流を取り込み直すたびに再適用する。** 差分を増やす判断はプロジェクト側のADRへ記録する。
-6. **フォーク側の変更をフォーク側のmainへ入れる前に、上流へ出すものと出さないものを分けておく。** 混ざったままmainへ入れると、以降の上流へのPRすべてに組織固有の差分が乗る。
+1. **forkへ恒常的なsource差分を持たない。** forkは別製品を作る場所ではなく、配布・検証・upstreamとの往復に利用する。
+2. **owner依存値をsourceへ固定しない。** package scope等はpublish時または利用側設定から導出する。
+3. **Platformのsubmodule URLはowner固定を避ける。** sibling repository構成を前提にrelative URLを利用し、fork側で `.gitmodules` の恒常差分を持たない。
+4. **汎用改善はupstreamへPRする。** 組織名、内部URL、内部host、特定project固有path、非公開運用等を含まない変更を候補とする。
+5. **組織固有情報はforkへ混ぜない。** その情報を所有するApplicationや別の組織内共有資産へ置く。
+6. やむを得ずforkへ恒常差分を持つ必要が生じた場合は、forkではなく独立repositoryとして分岐すべきかを先に検討する。
+
+## Package
+
+UI Platform repository名は `ui-platform`、Applicationから利用するpackage依存名は `application-ui-kit` とします。
+
+GitHub Packagesの実package名は `@<owner>/application-ui-kit` とし、publish元repositoryのownerに合わせます。Application側はnpm aliasで `application-ui-kit` に固定し、source codeへowner差分を持ち込みません。
+
+## Platform submodule
+
+PlatformはStandards / Playbookをsubmoduleとしてpinします。
+
+`.gitmodules` は次のようにrelative URLを利用します。
+
+```ini
+[submodule "standards"]
+    path = standards
+    url = ../ai-dev-standards.git
+
+[submodule "playbook"]
+    path = playbook
+    url = ../ai-dev-playbook.git
+```
+
+これにより、`owner-a/ai-dev-platform` は同じownerの `owner-a/ai-dev-standards` / `owner-a/ai-dev-playbook` を参照し、forkごとにURLを書き換えるsource差分を避けられます。
+
+この構成を利用するownerは、Platformだけでなく対応するStandards / Playbook repositoryも同じowner配下へ用意します。
 
 ## 結果
 
-- 上流の更新を、衝突解消なしに取り込める。
-- 組織は自分のレジストリで配布でき、上流所有者の認証情報を配らなくて済む。
-- 上流へのPRに組織固有の差分が混ざらない。
-- 「フォークしている意味」が、コードの分岐ではなく配布の所有として説明できる。
-- 組織固有のUIやスクリプトの置き場所が、フォークではなく所有プロジェクトに定まる。
+- upstream更新を取り込みやすい。
+- forkごとの `.gitmodules` 差分を避けられる。
+- UI packageをownerごとのscopeでpublishしてもsource差分が生じない。
+- upstream PRへ組織固有差分が混ざりにくい。
+- forkと独立製品の境界を明確にできる。
 
-## 例外・見直し
+## 見直し
 
-上流が組織固有の要求を受け入れられない、または上流の更新が止まった場合は、フォークではなく独立したリポジトリとして分岐させることを検討する。その場合は上流との関係を切ることを明示し、汎用改善を上流へ返す運用をやめる判断もADRへ記録する。
-
-「上流へ出すのが面倒」「あとで整理する」を理由にフォークへ差分を足さない。差分は増えるほど取り込みコストが上がり、後からの分離が難しくなる。
+upstreamと恒常的に異なる要件を持つようになった場合は、fork差分を積み上げず独立repositoryとして分岐する判断をADRへ残します。

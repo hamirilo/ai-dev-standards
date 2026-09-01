@@ -1,44 +1,48 @@
 # Application UI Standard
 
-本ドキュメントは、複数アプリで操作感を揃えるための **Core Application UI Standard** です。
-見た目の細部ではなく、全体で繰り返し使うUI判断だけを定義します。
+本ドキュメントは、複数Applicationで操作感を揃えるための **Core Application UI Standard** です。
+見た目の細部やComponent仕様ではなく、繰り返し使うUI判断と制約だけを定義します。
+
+UIの具体的なFoundations、Components、Patterns、Templates、Storybook Catalogは [ui-platform](https://github.com/hamirilo/ui-platform) を正とします。
 
 ---
 
 ## 1. UIの基本原則
 
-- **基本UI**: Reactの基本UIコンポーネントは、原則として `shadcn/ui` を基礎にする。プロジェクトが `application-ui-kit` 等の採用済みUI実装を利用している場合は、その実装を優先し、同じPrimitiveを再実装しない。
-- **独自ラッパー**: 採用済みUI実装や `shadcn/ui` を包む独自ラッパーは、複数箇所で共通の見た目・振る舞い・ポリシーを維持する必要がある場合に限って作る。Propsを素通しするだけのラッパーは作らない。
-- **Primary Action**: 画面の主操作は、原則としてPage Header付近の分かりやすい位置（通常は右側）に置く。
-- **通知**: `alert()` を通常の通知に使わず、保存成功などの補助的なフィードバックにはToastを使う。
-- **破壊的操作**: `confirm()` に依存せず、重要な削除等はConfirm Dialog等で意図を確認する。
-- **Empty State**: データがない場合は状態を明示し、有効な次の操作がある場合のみ提示する。
-- **基本操作性**: キーボード操作やフォーカス表示など、利用しているUI Componentのアクセシビリティ上の振る舞いを不用意に壊さない。
-- **先行抽象化を避ける**: UI Kitを導入すること自体を目的にせず、実際の繰り返しが確認されるまで不要なラッパーや共通化を増やさない。採用済みのUI Kitがある場合は再実装せず利用する。
+- **基本UI**: React UIは原則として `shadcn/ui` を基礎にする。対象Applicationが `application-ui-kit` を採用している場合は、その既存Componentを優先し、同じPrimitiveを再実装しない。
+- **独自ラッパー**: 既存UIを包むwrapperは、共通の見た目・振る舞い・policyを追加する明確なvalueがある場合だけ作る。Propsを素通しするだけのwrapperは作らない。
+- **Primary Action**: 画面の主操作はPage Header付近の分かりやすい位置を基本とする。
+- **通知**: 通常のfeedbackに `alert()` を使わず、保存成功等の補助的なfeedbackにはToastを使う。
+- **破壊的操作**: 重要な削除等は `confirm()` に依存せず、Confirm Dialog等で意図を確認する。
+- **Empty State**: データがない状態を明示し、有効な次の操作がある場合のみ提示する。
+- **基本操作性**: keyboard操作、focus表示等、利用しているUI Componentのaccessibility上の振る舞いを壊さない。
+- **先行抽象化を避ける**: 実際の繰り返しが確認されるまで不要なwrapperや共通Componentを増やさない。
 
 ---
 
 ## 2. Semantic Tokens
 
-意味を持つ色・状態表現は、具体的な色ではなくSemantic Tokenで指定する。
+意味を持つ色・状態表現は、具体色ではなくSemantic Tokenで指定します。
 
-- `primary`, `secondary`, `muted`, `accent`, `destructive`, `background`, `foreground`, `border`, `input`, `ring` など、`shadcn/ui` のToken体系を基本とする。
+- `primary`, `secondary`, `muted`, `accent`, `destructive`, `background`, `foreground`, `border`, `input`, `ring` 等、`shadcn/ui` のToken体系を基本とする。
 - Tokenは「何色か」ではなく「何のための表現か」で選ぶ。
-- `blue-600` や `red-500` のような固定色を、主要操作・状態表現の意味として直接使わない。
-- Themeの具体的な色値は各アプリ側で管理し、Standardでは固定しない。
-- 既存Tokenで表現できる場合は、新しいTokenを増やさない。
+- `blue-600` や `red-500` のようなraw colorを、主要操作・状態表現の意味として直接使わない。
+- Themeの具体値はStandardで固定せず、UI Platformまたは利用側Applicationのtheme設定で管理する。
+- 既存Tokenで表現できる場合は新しいTokenを増やさない。
 
-Themeを定義・変更する場合の詳細は [Theme Customization](optional/theme-customization.md) を参照する。
+具体的なToken値、Theme実装、Componentへの適用方法はUI Platformを参照してください。
 
 ---
 
 ## 3. 初期描画の安定性
 
-- 初期描画時のFOUC、FOIT、FOUTおよび予期しないレイアウトシフトを抑える。
-- ページシェル、ナビゲーション、主要コンテンツなど、初期表示に必要な領域は描画前に確保する。
-- 画像、SVG、動画、埋め込み要素には、固有サイズ、`aspect-ratio` またはコンテナサイズを指定する。
-- Webフォントを使用する場合は、読み込み中・失敗時にもテキストの可読性と操作性を維持し、フォント切り替えによる大きなレイアウトシフトを避ける。
-- 通常のスタイルはビルド済みCSSで管理する。外部CSSだけでは初期レイアウトを安定させられない場合に限り、ページシェルや主要領域の初期サイズを定義する最小限のCritical CSSを `base.html` の `<head>` に記述できる。これは個別コンポーネントのデザイン調整には使用しない。
+- 初期描画時のFOUC、FOIT、FOUT、予期しないlayout shiftを抑える。
+- Page shell、navigation、主要content等、初期表示に必要な領域は描画前に確保する。
+- 画像、SVG、動画、埋め込み要素には固有size、`aspect-ratio`、またはcontainer sizeを指定する。
+- Web font利用時も読み込み中・失敗時の可読性と操作性を維持する。
+- Critical CSSは初期layoutを安定させる最小限の用途に限定し、個別Componentのdesign調整には使わない。
+
+具体的な実装・検証方法はPlaybookで扱います。
 
 ---
 
@@ -46,119 +50,96 @@ Themeを定義・変更する場合の詳細は [Theme Customization](optional/t
 
 | 種類 | 基本表現 |
 |---|---|
-| 入力項目のエラー | Field Error |
-| フォーム全体・業務ルールのエラー | Form Error / Alert |
+| 入力項目のerror | Field Error |
+| Form全体・業務ruleのerror | Form Error / Alert |
 | 操作・非同期処理の一時的失敗 | Toast |
-| ページ・機能自体を利用できない | Error State / Error Page |
+| Page・機能自体を利用できない | Error State / Error Page |
 
-入力エラーをToastだけで伝えず、内部例外やstack traceをそのままユーザーへ表示しない。
+入力errorをToastだけで伝えず、内部例外やstack traceをそのまま利用者へ表示しません。
 
 ---
 
-## 5. フォーム / バリデーションUX
+## 5. Form / Validation UX
 
-- 早く検出できる入力不備は、可能な範囲でクライアント側でも知らせる。
-- 正当性の最終判断は必ずサーバー側で行う。
-- Field Errorは対象フィールドの近くに表示する。
-- フォーム全体の業務エラーは分かりやすい位置に表示する。
+- 早く検出できる入力不備は可能な範囲でclient側でも知らせる。
+- 正当性の最終判断はserver側で行う。
+- Field Errorは対象fieldの近くに表示する。
+- Form全体の業務errorは分かりやすい位置に表示する。
 - 送信失敗時に入力内容を不用意に失わない。
 - 保存中は必要に応じて二重送信を防止する。
 
-見た目の細部はCore Standardで固定しない。
+見た目の細部とComponent APIはStandardで固定しません。
 
 ---
 
 ## 6. Domain Components
 
-社員・組織・拠点など、特定の業務ドメインに意味を持つUIは、そのドメインを所有するプロジェクトで管理する。共通UIライブラリ側には置かない。
+社員・組織・拠点等、特定の業務domainに意味を持つUIは、そのdomainを所有するprojectで管理します。UI Platformへは置きません。
 
 例:
 
 - 社員選択: `UserPicker` / `EmployeeSearch`
 - 組織・部署選択: `DepartmentPicker` / `OrganizationTree`
 
-`DatePicker`, `DataTable`, `Dialog`, `Toast` などの汎用UIはDomain Componentとして扱わない。まず `shadcn/ui`、採用済みのApplication UI Kit、またはプロジェクト内の既存実装を利用する。
+`DatePicker`, `DataTable`, `Dialog`, `Toast` 等の汎用UIはDomain Componentとして扱いません。まず採用済みUI実装または `shadcn/ui` を利用します。
 
-動画、画像ギャラリー、チャート、地図など `shadcn/ui` で解決しない領域のライブラリ選定は [Recommendations](../../../recommendations/frontend.md) を参照する。
+動画、画像gallery、chart、map等、`shadcn/ui` で解決しない領域のlibrary選定は [Recommendations / Frontend](https://github.com/hamirilo/ai-dev-platform/blob/main/recommendations/frontend.md) を参照してください。
 
-### 他プロジェクトからの利用
-
-他のアプリが同じドメインの情報を必要とする場合は、所有プロジェクトが公開する連携境界を利用する。連携方式とデータ所有の原則は [Architecture Standard](../architecture/#8-api--システム間連携) を参照する。
-
-Domain Componentを、データ取得・認証・CSRF・エンドポイント設定を内包するUIパッケージとして共有しない。こうした都合を利用側へ持ち込むと結合が強くなる。
-
-同じUIが複数プロジェクトで実際に繰り返された場合は、データ連携と表示・操作を分離できることを確認した上で、共有の是非を検討する（[ADR-0003](../../decisions/adr-0003-core-and-optional-standards.md)）。1つ目の利用者しか存在しない段階では分離しない。
+他Applicationが同じdomain情報を必要とする場合は、所有projectが公開する連携境界を利用します。Domain Componentへ認証・CSRF・endpoint等のdomain連携を焼き込んで汎用UI packageとして共有しません。
 
 ---
 
 ## 7. Layout Profiles
 
-新規画面・アプリは、原則として **Standard App / Simple App / Focus App** のいずれかを起点にする。これらは実装コードをコピーするTemplateではなく、ナビゲーションや主要操作位置を揃えるためのLayout Profileとして扱う。実装テンプレートやStarterは別の資産として管理する。
+新規画面・Applicationは、原則として **Standard App / Simple App / Focus App** のいずれかを起点にします。これらは実装codeをcopyするTemplateではなく、navigationや主要操作位置を揃えるためのLayout Profileです。
 
 ### Standard App
 
-一般的な業務システム、管理画面、マスタ管理向け。
+一般的な業務system、管理画面、master管理向け。
 
 - Global Headerを上部に配置する。
-- Header左側にアプリ / ブランド、右側にUser Menuを配置する。
-- アプリ内の主要ナビゲーションは左Sidebarに配置する。
+- Header左側にApplication / brand、右側にUser Menuを配置する。
+- 主要navigationは左Sidebarに配置する。
 - Main Content上部にPage Headerを配置する。
-- Primary Actionは原則としてPage Header領域に配置する。
+- Primary ActionはPage Header領域を基本とする。
 
 ### Simple App
 
-単機能ツール、小規模ユーティリティ、簡易申請向け。
+単機能tool、小規模utility、簡易申請向け。
 
 - Sidebarを持たない。
-- Headerを上部に配置し、左側にアプリ名、右側にUser Menuを配置する。
+- Header左側にApplication名、右側にUser Menuを配置する。
 - Main Contentを中心に構成する。
-- 必要な場合はMain Content上部に一貫したPage Headerを置く。
 
-### Focus / Tool App
+### Focus App
 
-座席表、エディタ、キャンバス型ツール等、広い作業領域が重要なアプリ向け。
+座席表、editor、canvas型tool等、広い作業領域が重要なApplication向け。
 
 - Minimal Headerを上部に配置する。
 - 残りをMain Workspaceとして広く利用する。
-- 主要操作はHeaderまたは一貫したToolbarに集約する。
-- ユーザー関連操作の位置をアプリごとに無秩序に変更しない。
+- 主要操作はHeaderまたは一貫したToolbarへ集約する。
 
-### 固定するもの / 拡張してよいもの
+既存Profileで足りない場合は最も近いものを拡張し、同じ派生が複数projectで繰り返された場合にStandardへの昇格を検討します。
 
-強く揃えるもの:
-
-- Headerの基本位置
-- User Menuの位置
-- Standard AppにおけるSidebarの役割と位置
-- Page Headerの役割
-- Primary Actionの基本的な配置領域
-
-アプリ要件に応じて変更できるもの:
-
-- Content幅、Grid / Card構成
-- Filter Bar、Tabs、Toolbar
-- 補助Panel / Inspector
-- Dashboard Widgetや情報密度
-
-既存3レイアウトで足りない場合も、まず最も近いレイアウトを拡張する。それでも適合しない明確なUX上の理由がある場合だけプロジェクト固有Layoutを作り、同じ派生が複数プロジェクトで繰り返された場合にStandardへの昇格を検討する。
+具体的な画面例・TemplateはUI Platformを参照してください。
 
 ---
 
-## 8. デザイン参照と実装資産の境界
+## 8. UI Platformとの境界
 
-本Standardは、UIの判断原則・利用場面・操作の一貫性を定義します。次の資産は本リポジトリへ移しません。
+本Standardは **守るUI判断・制約** を定義します。次は [ui-platform](https://github.com/hamirilo/ui-platform) が所有します。
 
-- Claude Designや人間向けの設計参照: 採用済みApplication UI Kitのdesign-system/
-- 再利用可能な実装: Application UI KitのUI package
-- 使用例・状態確認・視覚検証: Application UI KitのStorybook
-- 社員検索や組織ツリーなどの業務ドメインUI: 各アプリまたはドメイン所有側
+- **Foundations**: Tokenの具体値、Typography、Spacing等
+- **Components**: 再利用可能なUI実装。Applicationから利用するpackage名は `application-ui-kit`
+- **Patterns**: UX課題に対する設計候補と選択条件
+- **Templates**: 画面レベルの構成例
+- **Catalog / Storybook**: 実際の見た目・状態・操作の確認
+- **Design reference**: Claude Design等へ渡す自己完結した設計参照
 
-UI Kitの全コンポーネント仕様や実装手順をStandardへ重複して記載しないでください。Standardから参照が必要な場合も、該当するタスクでのみUI Kitを追加で読みます。
+Component仕様、Props一覧、実装code、Storybook内容をStandardへ複製しません。
 
 ## Optional Standards
 
-該当する作業を行う場合のみ参照する。
+該当する作業を行う場合のみ参照します。
 
-- [Theme Customization](optional/theme-customization.md) — Themeの具体値やToken追加を扱う場合
-- [一覧画面](optional/list-screens.md) — 並び替え、絞り込み、ページネーション、行選択などの対話的な一覧／検索画面を実装する場合（これらの一部だけを持つ画面も含む）
-- [AI Screen Design](optional/ai-screen-design.md) — Claude Design等へ画面デザインを依頼する場合
+- [一覧画面](optional/list-screens.md) — 並び替え、絞り込み、pagination、行選択等の対話的な一覧／検索画面を実装する場合
