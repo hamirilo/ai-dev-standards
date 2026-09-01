@@ -111,3 +111,13 @@ Standardへの追加基準は [ADR-0003](decisions/adr-0003-core-and-optional-st
 ```bash
 just check-docs
 ```
+
+## リリース
+
+正式なversionはSemVer形式のGitHub Release（`v<major>.<minor>.<patch>`）で示します。tagだけを単独で作らず、利用者が変更内容を確認できるReleaseを作成します。
+
+本リポジトリではRelease Pleaseを利用します。`main`へのmerge後に作成・更新されるrelease PRでversionと`CHANGELOG.md`を確認し、そのPRをmergeしてtagとGitHub Releaseを作成します。`main`に入るcommit messageは、`fix:`をPATCH、`feat:`をMINOR、破壊的変更を`!`または`BREAKING CHANGE`として判定できる形にします。squash mergeでは通常PR titleがcommit messageになります。
+
+Standardsをreleaseしただけでは、Platform利用者の組合せは変わりません。必要なPlaybookのrelease後、`ai-dev-platform`のsubmodule pointerを更新してPlatformをreleaseした時点で、推奨する組合せが確定します。
+
+SemVerの判断、共有資産間のrelease順序、Platform releaseの扱いは[AI Development Platformのリリース方針](https://github.com/hamirilo/ai-dev-platform/blob/main/docs/release.md)を参照してください。
