@@ -141,7 +141,7 @@ UIの具体的なFoundations、Components、Patterns、Templates、Storybook Cat
 
 Component仕様、Props一覧、実装code、Storybook内容をStandardへ複製しません。
 
-Template classesと汎用Islandで表現できる部品を、Application側の独自CSS / JavaScriptで再実装しません。Applicationのbrand差分はTokenの上書きで表現します。既存実装の置き換えは変更箇所から順に行い、一括migrationを要求しません（[ADR-0007](../../decisions/adr-0007-presentation-only-islands-and-template-classes.md)）。
+`application-ui-kit` を採用しているApplicationでは、Template classesと汎用Islandで表現できる部品をApplication側の独自CSS / JavaScriptで再実装しません（採用していないApplicationには§1の採用条件がそのまま当てはまり、この項目を理由にUI Kitを追加しません）。Applicationのbrand差分はTokenの上書きで表現します。既存実装の置き換えは変更箇所から順に行い、一括migrationを要求しません（[ADR-0007](../../decisions/adr-0007-presentation-only-islands-and-template-classes.md)）。
 
 ## Optional Standards
 

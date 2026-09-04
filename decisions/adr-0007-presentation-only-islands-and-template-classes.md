@@ -15,7 +15,7 @@ ADR-0002はclient-side UI stateを持つinteractionをReact Islandsへ寄せ、h
 ## 決定
 
 1. **サーバー描画HTMLの見せ方だけを切り替えるUIは、UI Platformが提供する汎用Islandで扱う。** Islandはtab bar等の操作部だけを描き、対象contentはDjango Templateが描いたHTMLのまま表示・非表示を切り替える。Django Formの描画をReactへ持ち上げない。
-2. 当該UIをApplicationが自前で実装しない。UI Platformに無い場合はUI Platformへ追加する。domain連携を内部に持つものは従来どおりApplicationが所有する。
+2. `application-ui-kit` を採用しているApplicationは、当該UIを自前で実装しない。UI Platformに無い場合はUI Platformへ追加する。domain連携を内部に持つものは従来どおりApplicationが所有する。
 3. **Django Templateから使う共通classはUI Platformが所有・配布する。** classは対応するReact Componentと見た目を揃え、Semantic Tokenだけで表現する。Applicationは同じ部品を独自CSSで再実装せず、brand差分はTokenの上書きで表現する。
 4. htmxの役割、Alpine.js等を標準にしない判断、Domain Componentの扱いは変更しない。
 
