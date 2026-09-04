@@ -10,6 +10,7 @@ UIの具体的なFoundations、Components、Patterns、Templates、Storybook Cat
 ## 1. UIの基本原則
 
 - **基本UI**: React UIは原則として `shadcn/ui` を基礎にする。対象Applicationが `application-ui-kit` を採用している場合は、その既存Componentを優先し、同じPrimitiveを再実装しない。
+- **Template側の部品**: Django Templateで描くbutton、alert、tab、pagination等も、`application-ui-kit` を採用している場合はUI Platformが配布するtemplate用classと汎用Islandを優先し、同じ部品を独自CSS / 独自JavaScriptで再実装しない。
 - **独自ラッパー**: 既存UIを包むwrapperは、共通の見た目・振る舞い・policyを追加する明確なvalueがある場合だけ作る。Propsを素通しするだけのwrapperは作らない。
 - **Primary Action**: 画面の主操作はPage Header付近の分かりやすい位置を基本とする。
 - **通知**: 通常のfeedbackに `alert()` を使わず、保存成功等の補助的なfeedbackにはToastを使う。
@@ -52,10 +53,11 @@ UIの具体的なFoundations、Components、Patterns、Templates、Storybook Cat
 |---|---|
 | 入力項目のerror | Field Error |
 | Form全体・業務ruleのerror | Form Error / Alert |
+| 継続して伝える注意・案内（未完了の設定、権限による制限、メンテナンス予告等） | Alert / Banner |
 | 操作・非同期処理の一時的失敗 | Toast |
 | Page・機能自体を利用できない | Error State / Error Page |
 
-入力errorをToastだけで伝えず、内部例外やstack traceをそのまま利用者へ表示しません。
+入力errorをToastだけで伝えず、内部例外やstack traceをそのまま利用者へ表示しません。Toastは一時的なfeedback、Alert / Bannerは利用者が対処または確認するまでpage上に残す表現として使い分けます。
 
 ---
 
@@ -131,12 +133,15 @@ UIの具体的なFoundations、Components、Patterns、Templates、Storybook Cat
 
 - **Foundations**: Tokenの具体値、Typography、Spacing等
 - **Components**: 再利用可能なUI実装。Applicationから利用するpackage名は `application-ui-kit`
+- **Template classes**: Django Templateから使う共通class（`.btn-*`、`.alert`、`.tabs` 等）。対応するReact Componentと見た目を揃える責務を含む
 - **Patterns**: UX課題に対する設計候補と選択条件
 - **Templates**: 画面レベルの構成例
 - **Catalog / Storybook**: 実際の見た目・状態・操作の確認
 - **Design reference**: Claude Design等へ渡す自己完結した設計参照
 
 Component仕様、Props一覧、実装code、Storybook内容をStandardへ複製しません。
+
+`application-ui-kit` を採用しているApplicationでは、Template classesと汎用Islandで表現できる部品をApplication側の独自CSS / JavaScriptで再実装しません（採用していないApplicationには§1の採用条件がそのまま当てはまり、この項目を理由にUI Kitを追加しません）。Applicationのbrand差分はTokenの上書きで表現します。既存実装の置き換えは変更箇所から順に行い、一括migrationを要求しません（[ADR-0007](../../decisions/adr-0007-presentation-only-islands-and-template-classes.md)）。
 
 ## Optional Standards
 

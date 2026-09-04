@@ -44,10 +44,11 @@
 - Django Templatesがルーティング、ページシェル、SSR、Django Form、権限適用を担う。
 - **インタラクティブUIの標準手段はReact Islands** とする。
 - htmxはサーバー起点の部分HTML更新に限定する。
+- サーバーが描画したHTMLの見せ方だけを切り替えるUI（tab切替、開閉、入力欄の出し分け等）は、`application-ui-kit` を採用しているApplicationではUI Platformが提供する汎用Islandで扱い、Django Formの描画をReactへ持ち上げない。
 - ページ全体のReact化やReact Router等によるルーティングは標準にしない。
 - Django Formで完結する処理のためだけにJSON APIを作らない。
 
-詳細な判断背景は [ADR-0002](../../decisions/adr-0002-frontend-technology-boundary.md) を参照してください。
+詳細な判断背景は [ADR-0002](../../decisions/adr-0002-frontend-technology-boundary.md) と [ADR-0007](../../decisions/adr-0007-presentation-only-islands-and-template-classes.md) を参照してください。
 
 ---
 
