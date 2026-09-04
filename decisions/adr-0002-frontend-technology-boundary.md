@@ -2,6 +2,7 @@
 
 **ステータス**: 採用
 **置換対象**: ADR-0001（非推奨）
+**補足**: [ADR-0007](adr-0007-presentation-only-islands-and-template-classes.md) が、サーバー描画HTMLの見せ方だけを扱うUIの置き場所とtemplate側共通classの所有を追加で決定（このADRは置換しない）
 
 ## コンテキスト
 
