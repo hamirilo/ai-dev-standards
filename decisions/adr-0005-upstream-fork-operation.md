@@ -13,6 +13,8 @@ forkの主な目的は次です。
 
 forkへ恒常的なsource差分を持つと、upstream追従、submodule参照、package publish、上流PRのすべてで差分管理が必要になります。
 
+releaseの所有も同じ問題を持ちます。forkが自身でrepository releaseを行うと、upstreamに存在しないversionが生まれ、`version.txt`と`CHANGELOG.md`がupstreamと分岐します。採用側は同じversion名がupstreamとforkのどちらを指すのか判断できなくなります。
+
 ## 決定
 
 1. **forkへ恒常的なsource差分を持たない。** forkは別製品を作る場所ではなく、配布・検証・upstreamとの往復に利用する。
@@ -21,6 +23,7 @@ forkへ恒常的なsource差分を持つと、upstream追従、submodule参照�
 4. **汎用改善はupstreamへPRする。** 組織名、内部URL、内部host、特定project固有path、非公開運用等を含まない変更を候補とする。
 5. **組織固有情報はforkへ混ぜない。** その情報を所有するApplicationや別の組織内共有資産へ置く。
 6. やむを得ずforkへ恒常差分を持つ必要が生じた場合は、forkではなく独立repositoryとして分岐すべきかを先に検討する。
+7. **forkはrepository releaseを行わない。** `version.txt`、`CHANGELOG.md`、release tag、GitHub Releaseはupstreamが所有する。forkは採用するupstreamのtagを同期するだけとする。npm package releaseはこの対象外とし、「Package」の節に従いownerごとのscopeでpublishする。
 
 ## Package
 
@@ -53,6 +56,7 @@ PlatformはStandards / Playbookをsubmoduleとしてpinします。
 - upstream更新を取り込みやすい。
 - forkごとの `.gitmodules` 差分を避けられる。
 - UI packageをownerごとのscopeでpublishしてもsource差分が生じない。
+- forkがupstreamに存在しないversionを切らないため、採用versionの参照が一意になる。
 - upstream PRへ組織固有差分が混ざりにくい。
 - forkと独立製品の境界を明確にできる。
 
