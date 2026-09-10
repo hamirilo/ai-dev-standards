@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/hamirilo/ai-dev-standards/compare/v1.1.1...v1.1.2) (2026-09-10)
+
+
+### Bug Fixes
+
+* forkがrepository releaseを行わないことをADR-0005へ明記する ([#40](https://github.com/hamirilo/ai-dev-standards/issues/40)) ([c2dc25e](https://github.com/hamirilo/ai-dev-standards/commit/c2dc25e750fc4b3ea9f5595f20cc6306590149ff))
+
 ## [1.1.1](https://github.com/hamirilo/ai-dev-standards/compare/v1.1.0...v1.1.1) (2026-09-10)
 
 
