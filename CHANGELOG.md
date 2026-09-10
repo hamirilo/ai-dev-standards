@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/hamirilo/ai-dev-standards/compare/v1.1.0...v1.1.1) (2026-09-10)
+
+
+### Bug Fixes
+
+* **ci:** forkでRelease Pleaseのrelease jobを実行しない ([#38](https://github.com/hamirilo/ai-dev-standards/issues/38)) ([544cded](https://github.com/hamirilo/ai-dev-standards/commit/544cded717f6eee392d36aa892b32be868eed2d4))
+
 ## [1.1.0](https://github.com/hamirilo/ai-dev-standards/compare/v1.0.1...v1.1.0) (2026-09-04)
 
 
