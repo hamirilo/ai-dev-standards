@@ -1,3 +1,5 @@
+> 移行先: [hamirilo/hamirilo-platform](https://github.com/hamirilo/hamirilo-platform) の `CLAUDE.md（ルート）`
+
 # AI Development Standards
 
 **「複数のリポジトリを継続的に開発するときに、AIと人間の判断・実装・UI/UXのブレを減らす」**ための Opinionated な開発スタンダードです。
